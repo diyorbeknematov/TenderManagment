@@ -123,10 +123,10 @@ func (C *clientImpl) UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTend
 
 func (C *clientImpl) DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderResp, error) {
 	query := `
-				UPDATE Tensers SET 
+				UPDATE Tenders SET 
 					deleted_at = $1
 				WHERE 
-					id = $2 AND client_id = $2 AND deleted_at IS NULL`
+					id = $2 AND client_id = $3 AND deleted_at IS NULL`
 	_, err := C.DB.Exec(query, time.Now(), req.Id, req.ClientId)
 	if err != nil {
 		C.Log.Error(fmt.Sprintf("Tender o'chirilmadi: %v", err))

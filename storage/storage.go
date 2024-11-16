@@ -10,6 +10,7 @@ type Storage interface {
 	Client() postgres.ClientRepo
 	RegistrationRepository() postgres.RegistrationRepository
 	Contractor() postgres.BidRepository
+	NotificationRepository() postgres.NotificationRepository
 }
 
 type storageImpl struct {
@@ -28,8 +29,12 @@ func (S *storageImpl) Client() postgres.ClientRepo {
 	return postgres.NewClientRepo(S.DB, S.Log)
 }
 
-func (s storageImpl) RegistrationRepository() postgres.RegistrationRepository {
-	return postgres.NewRegistrationRepository(s.DB, s.Log)
+func (S *storageImpl) RegistrationRepository() postgres.RegistrationRepository {
+	return postgres.NewRegistrationRepository(S.DB, S.Log)
+}
+
+func (S *storageImpl) NotificationRepository() postgres.NotificationRepository {
+	return postgres.NewNotificationRepository(S.DB, S.Log)
 }
 
 func (s *storageImpl) Contractor() postgres.BidRepository {

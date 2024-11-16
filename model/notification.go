@@ -34,3 +34,9 @@ type AllNotifications struct {
 type UpdateNotification struct {
 	ID string `json:"id"`
 }
+
+type UpdateNotificationResp struct {
+	ID        string `json:"id"`
+	UpdatedAt string `json:"updated_at"`
+	Message   string `json:"message"`
+}

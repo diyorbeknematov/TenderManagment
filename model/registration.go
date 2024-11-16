@@ -8,6 +8,11 @@ type User struct {
 	CreatedAt string `json:"created_at"`
 }
 
+type IsUserExists struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
 type UserRegisterReq struct {
 	Username string `db:"username"`
 	Email    string `db:"email"`

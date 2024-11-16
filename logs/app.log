@@ -1,0 +1,10 @@
+{"time":"2024-10-04T19:06:37.754019656+05:00","level":"ERROR","msg":"sql: unknown driver \"postgres\" (forgotten import?)"}
+{"time":"2024-10-04T19:07:08.77914417+05:00","level":"ERROR","msg":"pq: database \"education_center\" does not exist"}
+{"time":"2024-10-04T19:07:57.968424857+05:00","level":"ERROR","msg":"listen tcp: address 8081: missing port in address"}
+{"time":"2024-10-11T18:24:41.886742217+05:00","level":"ERROR","msg":"Access token yaratilmadi: key is of invalid type"}
+{"time":"2024-10-11T18:24:41.886918798+05:00","level":"ERROR","msg":"Login databazdan ma'lumot olmadi: access token yaratishda xatolik: key is of invalid type"}
+{"time":"2024-10-11T18:27:48.038040969+05:00","level":"INFO","msg":"Refresh token topilmadi, yangi yaratilmoqda foydalanuvchi id: ba19ae39-127b-4070-98bf-bdd8536ae24d"}
+{"time":"2024-10-11T18:27:48.038743631+05:00","level":"ERROR","msg":"Refresh token databaxaga saqlanmadi: pq: there is no unique or exclusion constraint matching the ON CONFLICT specification"}
+{"time":"2024-10-11T18:27:48.038756215+05:00","level":"ERROR","msg":"Login databazdan ma'lumot olmadi: pq: there is no unique or exclusion constraint matching the ON CONFLICT specification"}
+{"time":"2024-10-11T18:29:01.760709246+05:00","level":"INFO","msg":"Refresh token topilmadi, yangi yaratilmoqda foydalanuvchi id: ba19ae39-127b-4070-98bf-bdd8536ae24d"}
+{"time":"2024-10-11T18:29:53.781173231+05:00","level":"INFO","msg":"Refresh token topilmadi, yangi yaratilmoqda foydalanuvchi id: ba19ae39-127b-4070-98bf-bdd8536ae24d"}

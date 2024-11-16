@@ -4,3 +4,4 @@ DROP TABLE IF EXISTS tenders;
 DROP TABLE IF EXISTS users;
 DROP TYPE IF EXISTS status_type;
 DROP TYPE IF EXISTS role_type;
+DROP TYPE IF EXISTS bid_status_type;

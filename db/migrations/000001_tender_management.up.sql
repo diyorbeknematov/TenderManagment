@@ -13,13 +13,13 @@ CREATE TABLE users (
 );
 
 CREATE TABLE Tenders (
-    id UUID PRIMARY KEY UNIQUE,          -- Tenderning unikal identifikatori
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),          -- Tenderning unikal identifikatori
     client_id UUID REFERENCES users(id), -- Users jadvalidagi id ustuniga chet el kaliti
     title VARCHAR(255) NOT NULL,         -- Tenderning sarlavhasi
     description TEXT,                    -- Tenderning tavsifi
     deadline TIMESTAMP NOT NULL,         -- Tenderning oxirgi muddati
     budget DOUBLE PRECISION NOT NULL,    -- Tender uchun byudjet
-    status INTEGER NOT NULL,              -- Tenderning holati (statusi)
+    status status_type DEFAULT 'open',              -- Tenderning holati (statusi)
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at TIMESTAMP
@@ -32,7 +32,7 @@ CREATE TABLE bids (
     price DECIMAL(10, 2) NOT NULL,
     delivery_time TIMESTAMP NOT NULL,
     comments TEXT,
-    status VARCHAR(50) NOT NULL,
+    status bid_status_type DEFAULT 'process',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at TIMESTAMP

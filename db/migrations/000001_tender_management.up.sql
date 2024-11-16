@@ -1,5 +1,6 @@
 CREATE TYPE status_type AS ENUM ('open', 'close', 'awarded');
 CREATE TYPE role_type AS ENUM ('client', 'contractor');
+CREATE TYPE bid_status_type AS ENUM ('fail', 'award', 'process');
 
 CREATE TABLE users (
     id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,

@@ -82,7 +82,7 @@ func GetBidsForTenderWithFilters(db *sql.DB, input model.GetBidsInput) ([]model.
 	}
 
 	if len(filters) > 0 {
-		query += " AND " + fmt.Sprintf("%s", filters[0])
+		query += " AND " + filters[0]
 		for _, filter := range filters[1:] {
 			query += " AND " + filter
 		}

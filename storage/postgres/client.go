@@ -36,11 +36,11 @@ func (C *clientImpl) CreateTender(req *model.CreateTenderReq) (*model.CreateTend
 
 	query := `
 				INSERT INTO Tenders(
-					client_id, title, description, deadline, budget, status)
+					id, client_id, title, description, deadline, budget, status)
 				VALUES
-					($1, $2, $3, $4, $5, $6)`
+					($1, $2, $3, $4, $5, $6, $7)`
 
-	_, err := C.DB.Exec(query, id, req.Diadline, req.Description, req.Diadline, req.Diadline, req.Budget, "open")
+	_, err := C.DB.Exec(query, id, req.ClientId, req.Title, req.Description, req.Diadline, req.Budget, "open")
 	if err != nil {
 		C.Log.Error(fmt.Sprintf("Ma'lumotlarni databazaga saqlashda xatolik: %v", err))
 		return nil, err
@@ -60,7 +60,7 @@ func (C *clientImpl) GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTe
 
 	query := `
 				SELECT 
-					id, client_id, title, description, diadline, budget, status, created_at
+					id, client_id, title, description, deadline, budget, status, created_at
 				FROM 
 					Tenders
 				WHERE 
@@ -107,7 +107,7 @@ func (C *clientImpl) GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTe
 func (C *clientImpl) UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTenderResp, error) {
 	query := `
 				UPDATE Tenders SET
-					title = $1, description = $2, diadline = $3, budget = $4, status = $5, updated_at = $8
+					title = $1, description = $2, deadline = $3, budget = $4, status = $5, updated_at = $8
 				WHERE 
 					client_id = $6 AND id = $7 AND deleted_at IS NULL`
 	_, err := C.DB.Exec(query, req.Title, req.Description, req.Diadline, req.Budget, req.Status, req.ClientId, req.Id, time.Now())

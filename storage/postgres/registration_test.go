@@ -12,10 +12,7 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	db, err := postgres.Connect(config.LoadConfig())
-	if err != nil {
-		t.Fatal(err)
-	}
+	db := postgres.ConnectDB(postgres.Logger)
 
 	userRepo := storage.NewStorage(db, logs.InitLogger())
 

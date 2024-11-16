@@ -18,13 +18,54 @@ func ConnectDB(logger *slog.Logger) *sql.DB {
 	return db
 }
 
-var logger = logs.InitLogger()
+var Logger = logs.InitLogger()
 
-func Test_CreateTender(t *testing.T){
-	db := ConnectDB(logger)
-	c := NewClientRepo(db, logger)
+func Test_CreateTender(t *testing.T) {
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
 
 	_, err := c.CreateTender(&model.CreateTenderReq{
-		ClientId: "",
+		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		Title: "Uy qurilishi",
+		Description: "9 qavatli uy qurish kerak",
+		Diadline: "10-11-2025",
+		Budget: 50_000_000.0,
 	})
+	if err != nil{
+		t.Fatal(err)
+	}
+}
+
+func Test_UpdateTender(t *testing.T){
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
+
+	_, err := c.UpdateTender(&model.UpdateTenderReq{
+		Id: "708b0159-3763-4002-846f-c7e1d017a009",
+		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		Title: "Uy qurilishi",
+		Description: "9 qavatli uy qurish kerak",
+		Diadline: "10-11-2025",
+		Budget: 50_000_000.0,
+		Status: "awarded",
+	})
+
+	if err != nil{
+		t.Fatal(err)
+	}
+}
+
+func Test_GetAllTenders(t *testing.T){
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
+
+	_, err := c.GetAllTenders(&model.GetAllTendersReq{
+		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		Limit: 10,
+		Page: 1,
+	})
+
+	if err != nil{
+		t.Fatal(err)
+	}
 }

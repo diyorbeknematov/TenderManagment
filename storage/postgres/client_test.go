@@ -9,7 +9,7 @@ import (
 )
 
 func ConnectDB(logger *slog.Logger) *sql.DB {
-	connector := "host = localhost user = postgres port = 5432 dbname = tender password = hamidjon4424 sslmode = disable"
+	connector := "host = localhost user = postgres port = 5432 dbname = tender_management password = 03212164 sslmode = disable"
 	db, err := sql.Open("postgres", connector)
 	if err != nil {
 		logger.Error(err.Error())
@@ -25,7 +25,7 @@ func Test_CreateTender(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.CreateTender(&model.CreateTenderReq{
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
 		Title: "Uy qurilishi",
 		Description: "9 qavatli uy qurish kerak",
 		Diadline: "10-11-2025",
@@ -41,8 +41,8 @@ func Test_UpdateTender(t *testing.T){
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.UpdateTender(&model.UpdateTenderReq{
-		Id: "708b0159-3763-4002-846f-c7e1d017a009",
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		Id: "97c71420-b902-434d-9ba0-e2d718451ead",
+		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
 		Title: "Uy qurilishi",
 		Description: "9 qavatli uy qurish kerak",
 		Diadline: "10-11-2025",
@@ -60,7 +60,7 @@ func Test_GetAllTenders(t *testing.T){
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.GetAllTenders(&model.GetAllTendersReq{
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
 		Limit: 10,
 		Page: 1,
 	})

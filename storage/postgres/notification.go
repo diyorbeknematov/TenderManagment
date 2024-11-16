@@ -8,6 +8,9 @@ import (
 )
 
 type NotificationRepository interface {
+	CreateNotification(notif model.Notification) (*model.NotificationResp, error)
+	UpdateNotification(id string) (*model.UpdateNotificationResp, error)
+	GetAllNotifications(notFilter model.NotifFilter) (*model.AllNotifications, error)
 }
 
 type notificationRepositoryImpl struct {
@@ -32,14 +35,13 @@ func (repo notificationRepositoryImpl) CreateNotification(notif model.Notificati
 			relation_id,
 			type
 		)
-		FROM notifications 
 		VALUES (
 			$1, $2, $3, $4
 		)
 		RETURNING 
 			id,
 			created_at
-	`).Scan(
+	`, notif.UserID, notif.Message, notif.RelationID, notif.Type).Scan(
 		&notifResp.ID,
 		&notifResp.CreatedAt,
 	)
@@ -54,20 +56,27 @@ func (repo notificationRepositoryImpl) CreateNotification(notif model.Notificati
 	return &notifResp, nil
 }
 
-func (repo notificationRepositoryImpl) UpdateNotification(id string) error {
-	_, err := repo.db.Exec(`
+func (repo notificationRepositoryImpl) UpdateNotification(id string) (*model.UpdateNotificationResp, error) {
+	var notif model.UpdateNotificationResp
+
+	err := repo.db.QueryRow(`
 		UPDATE notifications
 		SET
 			is_read = true
 		WHERE id = $1
-	`, id)
+		RETURNING 
+			id,
+			updated_at
+	`, id).Scan(&notif.ID, &notif.UpdatedAt)
 
 	if err != nil {
 		repo.logger.Error(fmt.Sprintf("Notificationni yangilashda xatolik bor: %v", err))
-		return err
+		return nil, err
 	}
 
-	return err
+	notif.Message = "Notification updated successfully"
+
+	return &notif, err
 }
 
 var Query = `
@@ -77,7 +86,7 @@ var Query = `
 		message,
 		relation_id,
 		type,
-		isRead
+		is_read
 	FROM notifications
 	WHERE user_id = $1
 `

@@ -11,6 +11,12 @@ import (
 )
 
 type ClientRepo interface {
+	CreateTender(req *model.CreateTenderReq) (*model.CreateTenderResp, error)
+	GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTendersResp, error) 
+	UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTenderResp, error)
+	DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderResp, error)
+	GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) 
+	BidAwarded(req *model.BidAwardedReq)(*model.BidAwardedResp, error)
 }
 
 type clientImpl struct {

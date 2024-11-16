@@ -64,12 +64,12 @@ type DeleteTenderResp struct {
 }
 
 type GetTenderBidsReq struct {
-	ClientId   string  `json:"client_id"`
+	ClientId   string  `json:"client_id" form:"client_id"`
 	TenderId   string  `json:"tender_id"`
-	StartPrice float64 `json:"start_price"`
-	EndPrice   float64 `json:"end_price"`
-	StartDate  string  `json:"start_date"`
-	EndDate    string  `json:"end_date"`
+	StartPrice float64 `json:"start_price" form:"start_price"`
+	EndPrice   float64 `json:"end_price" form:"end_price"`
+	StartDate  string  `json:"start_date" form:"start_date"`
+	EndDate    string  `json:"end_date" form:"end_date"`
 	Limit      int     `json:"limit"`
 	Page       int     `json:"page"`
 }

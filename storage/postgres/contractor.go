@@ -10,11 +10,11 @@ import (
 func CreateBid(db *sql.DB, input model.CreateBidInput) (int, error) {
 	var bidID int
 	query := `
-        INSERT INTO bids (tender_id, contractor_id, price, delivery_time, comments, status)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO bids (tender_id, contractor_id, price, delivery_time, comments)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id;
     `
-	err := db.QueryRow(query, input.TenderID, input.ContractorID, input.Price, input.DeliveryTime, input.Comments, input.Status).Scan(&bidID)
+	err := db.QueryRow(query, input.TenderID, input.ContractorID, input.Price, input.DeliveryTime, input.Comments).Scan(&bidID)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create bid: %w", err)
 	}

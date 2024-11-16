@@ -2,7 +2,7 @@ CREATE TYPE status_type AS ENUM ('open', 'close', 'awarded');
 CREATE TYPE role_type AS ENUM ('client', 'contractor');
 
 CREATE TABLE Tenders (
-    id UUID PRIMARY KEY UNIQUE,          -- Tenderning unikal identifikatori
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),          -- Tenderning unikal identifikatori
     client_id UUID REFERENCES users(id), -- Users jadvalidagi id ustuniga chet el kaliti
     title VARCHAR(255) NOT NULL,         -- Tenderning sarlavhasi
     description TEXT,                    -- Tenderning tavsifi
@@ -16,7 +16,7 @@ CREATE TABLE Tenders (
 
 
 CREATE TABLE user (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) NOT NULL UNIQUE,
     full_name VARCHAR(255) ,
     password VARCHAR(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE user (
 );
 
 CREATE TABLE bids (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tender_id INT NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
     contractor_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     price DECIMAL(10, 2) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE bids (
 
 
 CREATE TABLE notifications (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
     relation_id INT,

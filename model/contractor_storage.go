@@ -20,12 +20,10 @@ type Tender struct {
 	Budget      float64
 	Status      string
 	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   *time.Time
 }
 
 type GetTendersInput struct {
-	Status string
+	Status string `json:"status"` // Filter by status
 }
 
 type GetBidsInput struct {
@@ -43,8 +41,6 @@ type Bid struct {
 	Comments     string
 	Status       string
 	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	DeletedAt    *time.Time
 }
 
 type GetMyBidsInput struct {

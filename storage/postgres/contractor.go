@@ -7,21 +7,38 @@ import (
 	"tender/model"
 )
 
-func CreateBid(db *sql.DB, input model.CreateBidInput) (int, error) {
+type BidRepository interface {
+	CreateBid(model.CreateBidInput) (int, error)
+	GetTendersByFilters(model.GetTendersInput) ([]model.Tender, error)
+	GetBidsForTenderWithFilters(model.GetBidsInput) ([]model.Bid, error)
+	GetMyBidHistory(model.GetMyBidsInput) ([]model.BidHistory, error)
+}
+
+type bidRepositoryImpl struct {
+	db *sql.DB
+}
+
+func NewBidRepository(db *sql.DB) BidRepository {
+	return &bidRepositoryImpl{
+		db: db,
+	}
+}
+
+func (b bidRepositoryImpl) CreateBid(input model.CreateBidInput) (int, error) {
 	var bidID int
 	query := `
         INSERT INTO bids (tender_id, contractor_id, price, delivery_time, comments)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING id;
     `
-	err := db.QueryRow(query, input.TenderID, input.ContractorID, input.Price, input.DeliveryTime, input.Comments).Scan(&bidID)
+	err := b.db.QueryRow(query, input.TenderID, input.ContractorID, input.Price, input.DeliveryTime, input.Comments).Scan(&bidID)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create bid: %w", err)
 	}
 	return bidID, nil
 }
 
-func GetTendersByFilters(db *sql.DB, input model.GetTendersInput) ([]model.Tender, error) {
+func (b bidRepositoryImpl) GetTendersByFilters(input model.GetTendersInput) ([]model.Tender, error) {
 	query := `
         SELECT id, client_id, title, description, deadline, budget, status, created_at
         FROM tenders
@@ -42,7 +59,7 @@ func GetTendersByFilters(db *sql.DB, input model.GetTendersInput) ([]model.Tende
 
 	query += " ORDER BY deadline ASC;"
 
-	rows, err := db.Query(query, params...)
+	rows, err := b.db.Query(query, params...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch tenders: %w", err)
 	}
@@ -60,7 +77,7 @@ func GetTendersByFilters(db *sql.DB, input model.GetTendersInput) ([]model.Tende
 	return tenders, nil
 }
 
-func GetBidsForTenderWithFilters(db *sql.DB, input model.GetBidsInput) ([]model.Bid, error) {
+func (b bidRepositoryImpl) GetBidsForTenderWithFilters(input model.GetBidsInput) ([]model.Bid, error) {
 	query := `
         SELECT id, tender_id, contractor_id, price, delivery_time, comments, status, created_at
         FROM bids
@@ -90,7 +107,7 @@ func GetBidsForTenderWithFilters(db *sql.DB, input model.GetBidsInput) ([]model.
 
 	query += " ORDER BY price ASC, delivery_time ASC;"
 
-	rows, err := db.Query(query, params...)
+	rows, err := b.db.Query(query, params...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch bids: %w", err)
 	}
@@ -107,7 +124,7 @@ func GetBidsForTenderWithFilters(db *sql.DB, input model.GetBidsInput) ([]model.
 	return bids, nil
 }
 
-func GetMyBidHistory(db *sql.DB, input model.GetMyBidsInput) ([]model.BidHistory, error) {
+func (b bidRepositoryImpl) GetMyBidHistory(input model.GetMyBidsInput) ([]model.BidHistory, error) {
 	query := `
         SELECT b.id, b.tender_id, b.contractor_id, b.price, b.delivery_time, b.comments, b.status, 
                b.created_at, t.title AS tender_title, t.deadline AS tender_deadline
@@ -117,7 +134,7 @@ func GetMyBidHistory(db *sql.DB, input model.GetMyBidsInput) ([]model.BidHistory
           AND (b.deleted_at IS NULL)
         ORDER BY b.created_at DESC;
     `
-	rows, err := db.Query(query, input.UserID)
+	rows, err := b.db.Query(query, input.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch bid history: %w", err)
 	}

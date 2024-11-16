@@ -6,9 +6,10 @@ import (
 	"tender/storage/postgres"
 )
 
-type Storage interface{
-	Client()postgres.ClientRepo
+type Storage interface {
+	Client() postgres.ClientRepo
 	RegistrationRepository() postgres.RegistrationRepository
+	Contractor() postgres.BidRepository
 }
 
 type storageImpl struct {
@@ -23,10 +24,14 @@ func NewStorage(db *sql.DB, logger *slog.Logger) Storage {
 	}
 }
 
-func(S *storageImpl) Client()postgres.ClientRepo{
+func (S *storageImpl) Client() postgres.ClientRepo {
 	return postgres.NewClientRepo(S.DB, S.Log)
 }
 
 func (s storageImpl) RegistrationRepository() postgres.RegistrationRepository {
 	return postgres.NewRegistrationRepository(s.DB, s.Log)
+}
+
+func (s *storageImpl) Contractor() postgres.BidRepository {
+	return postgres.NewBidRepository(s.DB)
 }

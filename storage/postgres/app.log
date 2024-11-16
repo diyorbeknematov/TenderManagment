@@ -1,0 +1,11 @@
+{"time":"2024-11-16T18:44:57.149705921+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: syntax error at or near \"RETURING\""}
+{"time":"2024-11-16T18:45:26.726860523+05:00","level":"ERROR","msg":"Userni email bo'yicha olishda xatolik: sql: no rows in result set"}
+{"time":"2024-11-16T18:45:45.756457346+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-16T20:48:36.837873575+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: got 7 parameters but the statement requires 6"}
+{"time":"2024-11-16T20:50:04.891189592+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: date/time field value out of range: \"2025-16-11\""}
+{"time":"2024-11-16T20:50:24.41796749+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: date/time field value out of range: \"16-11-2025\""}
+{"time":"2024-11-16T20:53:38.444156448+05:00","level":"ERROR","msg":"Ma'lumotlarni yangilashda xatolik: pq: column \"diadline\" of relation \"tenders\" does not exist"}
+{"time":"2024-11-16T20:54:11.13528557+05:00","level":"ERROR","msg":"Ma'lumotlarni yangilashda xatolik: pq: column \"diadline\" of relation \"tenders\" does not exist"}
+{"time":"2024-11-16T20:54:27.266896289+05:00","level":"ERROR","msg":"Ma'lumotlarni yangilashda xatolik: pq: invalid input syntax for type timestamp: \"\""}
+{"time":"2024-11-16T21:13:09.12032194+05:00","level":"ERROR","msg":"Tender o'chirilmadi: pq: relation \"tensers\" does not exist"}
+{"time":"2024-11-16T21:13:27.436993253+05:00","level":"ERROR","msg":"Tender o'chirilmadi: pq: got 3 parameters but the statement requires 2"}

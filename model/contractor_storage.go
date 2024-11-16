@@ -10,17 +10,6 @@ type CreateBidInput struct {
 	Comments     string
 }
 
-type Tender struct {
-	ID          string
-	ClientID    string
-	Title       string
-	Description string
-	Deadline    time.Time
-	Budget      float64
-	Status      string
-	CreatedAt   time.Time
-}
-
 type GetTendersInput struct {
 	Status string `json:"status"` // Filter by status
 }

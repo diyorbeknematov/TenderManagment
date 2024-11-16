@@ -5,13 +5,13 @@ CURRENT_DIR=$(shell pwd)
 PDB_URL := postgres://$(DB_USER):$(DB_PASSWORD)@localhost:$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
 mig-up:
-	migrate -path migrations -database '${PDB_URL}' -verbose up
+	migrate -path db/migrations -database '${PDB_URL}' -verbose up
 
 mig-down:
-	migrate -path migrations -database '${PDB_URL}' -verbose down
+	migrate -path db/migrations -database '${PDB_URL}' -verbose down
 
 mig-force:
-	migrate -path migrations -database '${PDB_URL}' -verbose force 1
+	migrate -path db/migrations -database '${PDB_URL}' -verbose force 1
 
 create_mig:
 	@echo "Enter file name: "; \

@@ -8,7 +8,6 @@ type CreateBidInput struct {
 	Price        float64
 	DeliveryTime string
 	Comments     string
-	Status       string
 }
 
 type GetTendersInput struct {

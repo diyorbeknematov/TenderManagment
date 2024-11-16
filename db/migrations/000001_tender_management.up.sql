@@ -1,4 +1,5 @@
 CREATE TYPE status_type AS ENUM ('open', 'close', 'awarded');
+CREATE TYPE role_type AS ENUM ('client', 'contractor');
 
 CREATE TABLE Tenders (
     id UUID PRIMARY KEY UNIQUE,          -- Tenderning unikal identifikatori

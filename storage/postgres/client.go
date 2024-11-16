@@ -54,7 +54,7 @@ func (C *clientImpl) GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTe
 
 	query := `
 				SELECT 
-					id, title, description, diadline, budget, status
+					id, client_id, title, description, diadline, budget, status, created_at
 				FROM 
 					Tenders
 				WHERE 
@@ -71,7 +71,7 @@ func (C *clientImpl) GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTe
 
 	for rows.Next() {
 		var tender model.Tender
-		err := rows.Scan(&tender.Id, &tender.Title, &tender.Description, &tender.Diadline, &tender.Budget, &tender.Status)
+		err := rows.Scan(&tender.Id, &tender.ClientId, &tender.Title, &tender.Description, &tender.Diadline, &tender.Budget, &tender.Status, &tender.CreatedAt)
 		if err != nil {
 			C.Log.Error(fmt.Sprintf("Ma'lumotlarni o'zlashtirishda xatolik: %v", err))
 			return nil, err
@@ -132,4 +132,91 @@ func (C *clientImpl) DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTend
 	}, nil
 }
 
-func (C *clientImpl) GetTenderBids(req *)
+func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) {
+	var bids []model.Bid
+	var param []interface{}
+	var count int
+	query := `
+				SELECT 
+					id, tender_id, contractor_id, price, deleviry_time, comments, status, created_at
+				FROM 
+					bids
+				WHERE
+					tender_id = $1 AND deleted_at IS NULL`
+	count_query := `
+						SELECT 
+							COUNT(*)
+						FROM 
+							bids
+						WHERE 
+							tender_id = $1 AND deleted_at IS NULL`
+	param = append(param, req.TenderId)
+	if len(req.StartDate) > 0 {
+		param = append(param, req.StartDate)
+		query += fmt.Sprintf(" delivery_time >= $%v", len(param))
+		count_query += fmt.Sprintf(" delivery_time >= $%v", len(param))
+	}
+	if len(req.EndDate) > 0 {
+		param = append(param, req.EndDate)
+		query += fmt.Sprintf(" delivery_time <= $%v", len(param))
+		count_query += fmt.Sprintf(" delivery_time <= $%v", len(param))
+	}
+	if req.StartPrice >= 0.0 {
+		param = append(param, req.StartPrice)
+		query += fmt.Sprintf(" price >= $%v", len(param))
+		count_query += fmt.Sprintf(" price >= $%v", len(param))
+	}
+	if req.EndPrice > 0.0 {
+		param = append(param, req.EndPrice)
+		query += fmt.Sprintf(" price <= $%v", len(param))
+		count_query += fmt.Sprintf(" price <= $%v", len(param))
+	}
+	query += fmt.Sprintf(" LIMIT %v", req.Limit)
+	offset := (req.Page - 1) * req.Limit
+	query += fmt.Sprintf(" OFFSET %v", offset)
+
+	rows, err := C.DB.Query(query, param...)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Ma'lumotlarni olishda xatolik: %v", err))
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var bid model.Bid
+		err = rows.Scan(&bid.ID, &bid.TenderID, &bid.ContractorID, &bid.Price, &bid.Price, &bid.DeliveryTime, &bid.Comments, &bid.Status, &bid.CreatedAt)
+		if err != nil{
+			C.Log.Error(fmt.Sprintf("Bid ma'lumotlarini o'zlashtirishda xatolik: %v", err))
+			return nil, err
+		}
+		bids = append(bids, bid)
+	}
+
+	err = C.DB.QueryRow(count_query, param...).Scan(&count)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Bidlar sonini olishda xatolik: %v", err))
+		return nil, err
+	}
+
+	return &model.GetTenderBidsResp{
+		Bids: bids,
+		Count: count,
+	}, nil
+}
+
+func (C *clientImpl) BidAwarded(req *model.BidAwardedReq)(*model.BidAwardedResp, error){
+	query := `
+				UPDATE bids SET
+					status = $1 
+				WHERE 
+					id = $2 AND deleted_at IS NULL`
+	_, err := C.DB.Exec(query, req.Status, req.BidId)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Bid statusi yangilanmadi: %v", err))
+		return nil, err
+	}
+
+	return &model.BidAwardedResp{
+		Status: true,
+	}, nil
+}

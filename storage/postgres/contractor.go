@@ -51,7 +51,7 @@ func GetTendersByFilters(db *sql.DB, input model.GetTendersInput) ([]model.Tende
 	var tenders []model.Tender
 	for rows.Next() {
 		var tender model.Tender
-		if err := rows.Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.CreatedAt); err != nil {
+		if err := rows.Scan(&tender.Id, &tender.ClientId, &tender.Title, &tender.Description, &tender.Diadline, &tender.Budget, &tender.Status, &tender.CreatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan tender: %w", err)
 		}
 		tenders = append(tenders, tender)

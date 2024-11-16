@@ -3,7 +3,6 @@ module tender
 go 1.22.2
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/casbin/casbin/v2 v2.101.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.10.0

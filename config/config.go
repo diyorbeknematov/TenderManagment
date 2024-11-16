@@ -14,7 +14,7 @@ type Config struct {
 	DB_USER            string
 	DB_NAME            string
 	DB_PASSWORD        string
-	USER_SERVICE       string
+	API_PORT           string
 	ACCESS_SECRET_KEY  string
 	REFRESH_SECRET_KEY string
 }
@@ -31,7 +31,7 @@ func LoadConfig() Config {
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
 	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "education_center"))
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "secret"))
-	config.USER_SERVICE = cast.ToString(coalesce("USER_SERVICE", "8081"))
+	config.API_PORT = cast.ToString(coalesce("API_PORT", "8080"))
 	config.ACCESS_SECRET_KEY = cast.ToString(coalesce("ACCESS_SECRET_KEY", "secret"))
 	config.REFRESH_SECRET_KEY = cast.ToString(coalesce("REFRESH_SECRET_KEY", "secret"))
 	return config

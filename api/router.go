@@ -1,10 +1,13 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"tender/api/handler"
 
-func Router() *gin.Engine {
+	"github.com/gin-gonic/gin"
+)
+
+func Router(h *handler.Handler) *gin.Engine {
 	router := gin.Default()
-	
 
 	return router
 }

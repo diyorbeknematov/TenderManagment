@@ -15,10 +15,9 @@ CREATE TABLE Tenders (
 );
 
 
-CREATE TABLE user (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE users (
+    id UUID GEN_RANDOM_UUID() PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    full_name VARCHAR(255) ,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,

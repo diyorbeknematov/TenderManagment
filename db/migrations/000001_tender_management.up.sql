@@ -1,6 +1,16 @@
 CREATE TYPE status_type AS ENUM ('open', 'close', 'awarded');
 CREATE TYPE role_type AS ENUM ('client', 'contractor');
-CREATE TYPE bid_status_type AS ENUM ('process', 'canceled', 'accepted');
+
+CREATE TABLE users (
+    id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP
+);
 
 CREATE TABLE Tenders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),          -- Tenderning unikal identifikatori
@@ -15,23 +25,10 @@ CREATE TABLE Tenders (
     deleted_at TIMESTAMP
 );
 
-
-CREATE TABLE user (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username VARCHAR(255) NOT NULL UNIQUE,
-    full_name VARCHAR(255) ,
-    password VARCHAR(255) NOT NULL,
-    role role_type DEFAULT 'role_type',
-    email VARCHAR(255) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
-    deleted_at TIMESTAMP
-);
-
 CREATE TABLE bids (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tender_id INT NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
-    contractor_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
+    tender_id UUID NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
+    contractor_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     price DECIMAL(10, 2) NOT NULL,
     delivery_time TIMESTAMP NOT NULL,
     comments TEXT,
@@ -43,8 +40,8 @@ CREATE TABLE bids (
 
 
 CREATE TABLE notifications (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
     relation_id INT,
     type VARCHAR(50) NOT NULL,

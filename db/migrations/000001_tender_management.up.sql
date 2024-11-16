@@ -1,5 +1,6 @@
 CREATE TYPE status_type AS ENUM ('open', 'close', 'awarded');
 CREATE TYPE role_type AS ENUM ('client', 'contractor');
+CREATE TYPE bid_status_type AS ENUM ('process', 'canceled', 'accepted');
 
 CREATE TABLE Tenders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),          -- Tenderning unikal identifikatori
@@ -8,7 +9,7 @@ CREATE TABLE Tenders (
     description TEXT,                    -- Tenderning tavsifi
     deadline TIMESTAMP NOT NULL,         -- Tenderning oxirgi muddati
     budget DOUBLE PRECISION NOT NULL,    -- Tender uchun byudjet
-    status INTEGER NOT NULL,              -- Tenderning holati (statusi)
+    status status_type DEFAULT 'open',              -- Tenderning holati (statusi)
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at TIMESTAMP
@@ -20,7 +21,7 @@ CREATE TABLE user (
     username VARCHAR(255) NOT NULL UNIQUE,
     full_name VARCHAR(255) ,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL,
+    role role_type DEFAULT 'role_type',
     email VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -34,7 +35,7 @@ CREATE TABLE bids (
     price DECIMAL(10, 2) NOT NULL,
     delivery_time TIMESTAMP NOT NULL,
     comments TEXT,
-    status VARCHAR(50) NOT NULL,
+    status bid_status_type DEFAULT 'process',
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at TIMESTAMP

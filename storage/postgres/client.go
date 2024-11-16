@@ -21,4 +21,6 @@ func NewClientRepo(db *sql.DB, logger *slog.Logger)ClientRepo{
 	}
 }
 
-func (C *clientImpl) CreateTender()
+func (C *clientImpl) CreateTender() {
+	
+}

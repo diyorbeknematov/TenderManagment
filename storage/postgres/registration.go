@@ -9,8 +9,8 @@ import (
 
 type RegistrationRepository interface {
 	CreateUser(user model.UserRegisterReq) (*model.UserRegisterResp, error)
-	GetUserByEmail(email string) (*model.GetUser, error)
-	IsUserExists(email string) (bool, error)
+	GetUserByEmail(email  string) (*model.GetUser, error)
+	IsUserExists(email, username string) (bool, error)
 }
 
 type registrationRepositoryImpl struct {
@@ -38,7 +38,7 @@ func (repo registrationRepositoryImpl) CreateUser(user model.UserRegisterReq) (*
 		VALUES (
 			$1, $2, $3, $4
 		)
-		RETURING
+		RETURNING
 			id,
 			created_at
 	`, user.Username, user.Email, user.Role, user.Password).
@@ -84,7 +84,7 @@ func (repo registrationRepositoryImpl) GetUserByEmail(email string) (*model.GetU
 	return &user, err
 }
 
-func (repo registrationRepositoryImpl) IsUserExists(email string) (bool, error) {
+func (repo registrationRepositoryImpl) IsUserExists(email, username string) (bool, error) {
 	var exists bool
 
 	err := repo.db.QueryRow(`
@@ -92,10 +92,10 @@ func (repo registrationRepositoryImpl) IsUserExists(email string) (bool, error) 
             SELECT 1 FROM users 
             WHERE email = $1 OR username = $2
         )
-	`, email).Scan(&exists)
+	`, email, username).Scan(&exists)
 
 	if err != nil {
-		repo.logger.Error(fmt.Sprintf("User oldin bor "))
+		repo.logger.Error("Username or Email already exists")
 		return false, err
 	}
 

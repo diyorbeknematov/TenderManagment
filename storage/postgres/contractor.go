@@ -8,7 +8,7 @@ import (
 )
 
 type BidRepository interface {
-	CreateBid(model.CreateBidInput) (int, error)
+	CreateBid(model.CreateBidInput) (string, error)
 	GetTendersByFilters(model.GetTendersInput) ([]model.Tender, error)
 	GetBidsForTenderWithFilters(model.GetBidsInput) ([]model.Bid, error)
 	GetMyBidHistory(model.GetMyBidsInput) ([]model.BidHistory, error)
@@ -24,8 +24,8 @@ func NewBidRepository(db *sql.DB) BidRepository {
 	}
 }
 
-func (b bidRepositoryImpl) CreateBid(input model.CreateBidInput) (int, error) {
-	var bidID int
+func (b bidRepositoryImpl) CreateBid(input model.CreateBidInput) (string, error) {
+	var bidID string
 	query := `
         INSERT INTO bids (tender_id, contractor_id, price, delivery_time, comments)
         VALUES ($1, $2, $3, $4, $5)
@@ -33,7 +33,7 @@ func (b bidRepositoryImpl) CreateBid(input model.CreateBidInput) (int, error) {
     `
 	err := b.db.QueryRow(query, input.TenderID, input.ContractorID, input.Price, input.DeliveryTime, input.Comments).Scan(&bidID)
 	if err != nil {
-		return 0, fmt.Errorf("failed to create bid: %w", err)
+		return "", fmt.Errorf("failed to create bid: %w", err)
 	}
 	return bidID, nil
 }

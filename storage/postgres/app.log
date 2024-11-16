@@ -1,0 +1,5 @@
+{"time":"2024-11-16T22:54:51.432713+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-16T22:55:07.908223+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-16T22:55:17.524513+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-16T22:56:01.580589+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: insert or update on table \"tenders\" violates foreign key constraint \"tenders_client_id_fkey\""}
+{"time":"2024-11-16T22:56:01.580948+05:00","level":"ERROR","msg":"pq: insert or update on table \"tenders\" violates foreign key constraint \"tenders_client_id_fkey\""}

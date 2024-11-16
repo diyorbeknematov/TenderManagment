@@ -3,8 +3,8 @@ package model
 import "time"
 
 type CreateBidInput struct {
-	TenderID     int
-	ContractorID int
+	TenderID     string
+	ContractorID string
 	Price        float64
 	DeliveryTime string
 	Comments     string
@@ -15,15 +15,15 @@ type GetTendersInput struct {
 }
 
 type GetBidsInput struct {
-	TenderID        int
+	TenderID        string
 	MaxPrice        float64
 	MaxDeliveryTime string
 }
 
 type Bid struct {
-	ID           int
-	TenderID     int
-	ContractorID int
+	ID           string
+	TenderID     string
+	ContractorID string
 	Price        float64
 	DeliveryTime time.Time
 	Comments     string
@@ -32,7 +32,7 @@ type Bid struct {
 }
 
 type GetMyBidsInput struct {
-	UserID int
+	UserID string
 }
 
 type BidHistory struct {

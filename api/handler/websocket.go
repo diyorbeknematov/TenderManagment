@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"tender/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -11,13 +12,11 @@ import (
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		// Allow connections from any origin (you may want to restrict this in production)
-		return true
+		return true // Allow all connections (adjust as needed)
 	},
 }
 
 func (h *Handler) WebSocketNotifications(c *gin.Context) {
-	// Retrieve the UserID from the context
 	userID, exists := c.Get("UserID")
 	if !exists {
 		h.Log.Error("UserID not found in context")
@@ -25,7 +24,6 @@ func (h *Handler) WebSocketNotifications(c *gin.Context) {
 		return
 	}
 
-	// Upgrade the connection to a WebSocket
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Failed to upgrade connection: %v", err))
@@ -33,22 +31,35 @@ func (h *Handler) WebSocketNotifications(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	// Fetch unread notifications for the user
-	unreadNotifications, err := h.Service.GetAllNotifications(model.NotifFilter{UserID: userID.(string), IsRead: "false"})
-	if err != nil {
-		h.Log.Error(fmt.Sprintf("Error fetching unread notifications: %v", err))
-		return
-	}
+	// Log successful connection
+	h.Log.Info(fmt.Sprintf("WebSocket connection established for user: %s", userID))
 
-	// Send unread notifications to the WebSocket connection
-	for _, notif := range unreadNotifications.Notifications {
-		if err := conn.WriteJSON(notif); err != nil {
-			h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
-			return
+	// Poll for unread notifications every 5 seconds
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				unreadNotifications, err := h.Service.GetAllNotifications(model.NotifFilter{UserID: userID.(string), IsRead: "false"})
+				if err != nil {
+					h.Log.Error(fmt.Sprintf("Error fetching unread notifications: %v", err))
+					continue
+				}
+
+				// Send unread notifications to the WebSocket connection
+				for _, notif := range unreadNotifications {
+					if err := conn.WriteJSON(notif); err != nil {
+						h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
+						return
+					}
+				}
+			}
 		}
-	}
+	}()
 
-	// Optionally, you can handle incoming messages from the client
+	// Handle incoming messages from the client
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -56,6 +67,5 @@ func (h *Handler) WebSocketNotifications(c *gin.Context) {
 			break
 		}
 		h.Log.Info(fmt.Sprintf("Received message from client: %s", msg))
-		// Handle the message as needed
 	}
 }

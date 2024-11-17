@@ -24,3 +24,60 @@
 {"time":"2024-11-17T13:01:32.672382374+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: invalid input syntax for type uuid: \"\""}
 {"time":"2024-11-17T13:01:32.672415351+05:00","level":"ERROR","msg":"Tender ma'lumotlari databazaga saqlanmadi: pq: invalid input syntax for type uuid: \"\""}
 {"time":"2024-11-17T13:01:32.672421424+05:00","level":"ERROR","msg":"CreateTender request error: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:20:30.706558+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:25:36.821986+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:25:36.822799+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:26:09.069278+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:26:09.069557+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:27:02.715565+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:27:02.715859+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:30:22.718045+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:30:22.718374+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:30:22.72218+05:00","level":"ERROR","msg":"Error getting notification count: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:22.722233+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:22.722246+05:00","level":"ERROR","msg":"Error fetching unread notifications: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:25.425202+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:30:25.425659+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:30:25.426113+05:00","level":"ERROR","msg":"Error getting notification count: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:25.426186+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:25.426215+05:00","level":"ERROR","msg":"Error fetching unread notifications: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:53.184958+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:30:53.185451+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:30:53.187354+05:00","level":"ERROR","msg":"Error getting notification count: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:53.187404+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:30:53.187452+05:00","level":"ERROR","msg":"Error fetching unread notifications: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:31:01.958609+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:31:01.958784+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:31:01.959984+05:00","level":"ERROR","msg":"Error getting notification count: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:31:01.96002+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:31:01.960048+05:00","level":"ERROR","msg":"Error fetching unread notifications: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:32:17.467513+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:32:17.467962+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:32:17.470116+05:00","level":"ERROR","msg":"Error fetching notification count: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:32:17.470167+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:32:17.470191+05:00","level":"ERROR","msg":"Error fetching unread notifications: pq: syntax error at or near \"WHERE\""}
+{"time":"2024-11-17T13:39:34.198296+05:00","level":"ERROR","msg":"Failed to extract: token is invalid or expired"}
+{"time":"2024-11-17T13:39:58.066486+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:39:58.067148+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:39:58.070609+05:00","level":"ERROR","msg":"Error scanning row: sql: expected 7 destination arguments in Scan, not 6"}
+{"time":"2024-11-17T13:39:58.070677+05:00","level":"ERROR","msg":"Barcha notificationlarni olishda xatolik bor: sql: expected 7 destination arguments in Scan, not 6"}
+{"time":"2024-11-17T13:39:58.070699+05:00","level":"ERROR","msg":"Error fetching unread notifications: sql: expected 7 destination arguments in Scan, not 6"}
+{"time":"2024-11-17T13:43:14.932881+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:43:14.933839+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:56:49.029467+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T13:56:54.031135+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:56:59.030816+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:04.03082+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:09.030859+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:14.030593+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:19.030548+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:24.030486+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:29.030383+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:34.030386+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:39.030274+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:44.030196+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:49.030195+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:54.029995+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:57:59.02988+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:58:04.029787+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T13:58:09.029836+05:00","level":"INFO","msg":"working notification"}

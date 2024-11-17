@@ -10,7 +10,7 @@ import (
 type NotificationRepository interface {
 	CreateNotification(notif model.Notification) (*model.NotificationResp, error)
 	UpdateNotification(id string) (*model.UpdateNotificationResp, error)
-	GetAllNotifications(notFilter model.NotifFilter) (*model.AllNotifications, error)
+	GetUnreadNotifications(userID string) ([]model.Notification, error)
 }
 
 type notificationRepositoryImpl struct {
@@ -97,48 +97,33 @@ var CountQuery = `
 	WHERE user_id = $1
 `
 
-func (repo notificationRepositoryImpl) GetAllNotifications(notFilter model.NotifFilter) (*model.AllNotifications, error) {
-	var (
-		args          []interface{}
-		filter        string
-		notifications []model.Notification
-		totalCount    int
-	)
+func (repo notificationRepositoryImpl) GetUnreadNotifications(userID string) ([]model.Notification, error) {
+	var notifications []model.Notification
 
-	args = append(args, notFilter.UserID)
+	query := `
+        SELECT 
+            id, 
+            user_id, 
+            message, 
+            relation_id, 
+            type, 
+            is_read
+        FROM 
+            notifications 
+        WHERE 
+            user_id = $1 
+            AND is_read = FALSE;
+    `
 
-	if notFilter.IsRead != "" {
-		filter += fmt.Sprintf(" AND is_read = $%d", len(args)+1)
-		args = append(args, notFilter.IsRead)
-	}
-
-	if notFilter.DateFrom != "" {
-		filter += fmt.Sprintf(" AND created_at > $%d", len(args)+1)
-		args = append(args, notFilter.DateFrom)
-	}
-
-	if notFilter.DateTo != "" {
-		filter += fmt.Sprintf(" AND created_at < $%d", len(args)+1)
-		args = append(args, notFilter.DateTo)
-	}
-
-	err := repo.db.QueryRow(CountQuery+filter, args...).Scan(&totalCount)
+	rows, err := repo.db.Query(query, userID)
 	if err != nil {
-		repo.logger.Error(fmt.Sprintf("Notiticationslar sonini get qilishda xatolik: %v", err))
+		repo.logger.Error(fmt.Sprintf("Error fetching unread notifications: %v", err))
 		return nil, err
 	}
-
-	filter += fmt.Sprintf(" OFFSET %d LIMIT %d", notFilter.Offset, notFilter.Limit)
-
-	rows, err := repo.db.Query(Query+filter, args...)
-	if err != nil {
-		repo.logger.Error(fmt.Sprintf("Notificationlarni olishda xatolik bor: %v", err))
-		return nil, err
-	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var notification model.Notification
-
 		err := rows.Scan(
 			&notification.ID,
 			&notification.UserID,
@@ -148,16 +133,11 @@ func (repo notificationRepositoryImpl) GetAllNotifications(notFilter model.Notif
 			&notification.IsRead,
 		)
 		if err != nil {
-			repo.logger.Error(fmt.Sprintf("rowsdan o'qishda xatoik bor: %v", err))
+			repo.logger.Error(fmt.Sprintf("Error scanning row: %v", err))
 			return nil, err
 		}
 		notifications = append(notifications, notification)
 	}
 
-	return &model.AllNotifications{
-		Notifications: notifications,
-		TotalCount:    totalCount,
-		Limit:         notFilter.Limit,
-		Page:          notFilter.Offset,
-	}, nil
+	return notifications, nil
 }

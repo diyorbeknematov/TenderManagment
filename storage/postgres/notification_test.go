@@ -43,17 +43,12 @@ func TestGetAllNotifications(t *testing.T) {
 
 	NotifRepo := postgres.NewNotificationRepository(db, postgres.Logger)
 
-	resp, err := NotifRepo.GetAllNotifications(model.NotifFilter{
-		UserID: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
-		IsRead: "true",
-		Limit:  10,
-		Offset: 0,
-	})
+	resp, err := NotifRepo.GetUnreadNotifications("")
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert.NotNil(t, resp)
-	assert.NotEqual(t, len(resp.Notifications), 0)
+	assert.NotEqual(t, len(resp), 0)
 }

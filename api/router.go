@@ -31,7 +31,6 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 
 	router.POST("/register", h.RegistrationHandler)
 	router.POST("/login", h.LoginHandler)
-	
 
 	tender := router.Group("/tenders")
 	tender.Use(middleware.AuthMiddleware(logger))
@@ -48,7 +47,7 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 		tender.GET("/all", h.GetTendersByFilters)
 	}
 
-	router.GET("/ws/notifications", h.WebSocketNotifications)
+	router.GET("/ws/notifications", middleware.AuthMiddleware(logger), h.WebSocketNotifications)
 
 	user := router.Group("/users")
 	{

@@ -1,0 +1,10 @@
+{"time":"2024-11-17T14:05:03.50499+05:00","level":"ERROR","msg":"Failed to extract: token is invalid or expired"}
+{"time":"2024-11-17T14:05:05.343429+05:00","level":"ERROR","msg":"Failed to extract: token is invalid or expired"}
+{"time":"2024-11-17T14:05:20.991607+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T14:05:20.991903+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T14:05:45.477226+05:00","level":"ERROR","msg":"Error reading message: websocket: close 1000 (normal)"}
+{"time":"2024-11-17T14:05:45.916177+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T14:05:45.91625+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T14:10:33.136589+05:00","level":"INFO","msg":"WebSocket connection established for user: 870b9cdc-3e01-43b4-beb4-331d2b3293a4"}
+{"time":"2024-11-17T14:10:33.136847+05:00","level":"INFO","msg":"working notification"}
+{"time":"2024-11-17T14:10:36.120646+05:00","level":"ERROR","msg":"Error reading message: websocket: close 1000 (normal)"}

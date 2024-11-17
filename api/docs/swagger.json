@@ -105,6 +105,105 @@
                 }
             }
         },
+        "/tenders/all": {
+            "get": {
+                "description": "Retrieve a list of tenders filtered by status or other parameters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contractor"
+                ],
+                "summary": "Get tenders by filters",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by status (e.g., open, closed, awarded)",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tenders",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Tender"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/status_change/{id}/bids": {
+            "post": {
+                "description": "Tender uchun tanlangan taklifni statusini o'zgartirish",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tanlangan taklifni belgilash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID'si",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Taklif haqida ma'lumot",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SubmitBitReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Taklif muvaffaqiyatli belgilandi",
+                        "schema": {
+                            "$ref": "#/definitions/model.SubmitBitResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Ma'lumotlarni olishda xatolik",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki BidAwarded funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tenders/{id}": {
             "put": {
                 "description": "Mavjud tenderning ma'lumotlarini yangilash uchun API endpoint",
@@ -253,7 +352,117 @@
         },
         "/tenders/{id}/bids": {
             "get": {
-                "description": "Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun API endpoint",
+                "description": "Contractor can get all bids of a tender with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contractor"
+                ],
+                "summary": "Get bids of tender",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Maximum price filter",
+                        "name": "max_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Maximum delivery time filter (ISO8601 format)",
+                        "name": "max_delivery_time",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of bids",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Bid"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Contractor can create bid to teender",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contractor"
+                ],
+                "summary": "Create bid",
+                "parameters": [
+                    {
+                        "description": "bid infos (DeliveryTime format: dd-mm-yyyy)",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateBid"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tender id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki CreateBid funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{id}/my/bids": {
+            "get": {
+                "description": "Client o'z tenderi uchun bildirilgan barcha takliflarni olish uchun API endpoint",
                 "consumes": [
                     "application/json"
                 ],
@@ -329,9 +538,11 @@
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Tender uchun tanlangan taklifni \"awarded\" sifatida belgilash",
+            }
+        },
+        "/users/{id}/bids": {
+            "get": {
+                "description": "Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline",
                 "consumes": [
                     "application/json"
                 ],
@@ -339,42 +550,36 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Client"
+                    "Contractor"
                 ],
-                "summary": "Tanlangan taklifni belgilash",
+                "summary": "Get Bid History for a Contractor",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Tender ID'si",
+                        "description": "User ID",
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Taklif haqida ma'lumot",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SubmitBitReq"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Taklif muvaffaqiyatli belgilandi",
+                        "description": "List of bid history",
                         "schema": {
-                            "$ref": "#/definitions/model.SubmitBitResp"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.BidHistory"
+                            }
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
+                        "description": "Invalid input",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
                     },
                     "500": {
-                        "description": "Server xatosi yoki BidAwarded funksiyasi ishlamadi",
+                        "description": "Failed to retrieve bid history",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -418,6 +623,55 @@
                 },
                 "tender_id": {
                     "type": "string"
+                }
+            }
+        },
+        "model.BidHistory": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "contractor_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tender_deadline": {
+                    "type": "string"
+                },
+                "tender_id": {
+                    "type": "string"
+                },
+                "tender_title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateBid": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 }
             }
         },

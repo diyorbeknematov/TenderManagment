@@ -166,7 +166,7 @@ func (h *Handler) GetAllTenders(c *gin.Context) {
 }
 
 // @Summary      Tenderga bildirilgan takliflarni olish
-// @Description  Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun API endpoint
+// @Description  Client o'z tenderi uchun bildirilgan barcha takliflarni olish uchun API endpoint
 // @Tags         Client
 // @Accept       json
 // @Produce      json
@@ -180,7 +180,7 @@ func (h *Handler) GetAllTenders(c *gin.Context) {
 // @Success      200          {object} model.GetTenderBidsResp "Takliflar muvaffaqiyatli qaytarildi"
 // @Failure      400          {object} model.Error             "Ma'lumotlarni olishda xatolik"
 // @Failure      500          {object} model.Error             "Server xatosi yoki GetTenderBids funksiyasi ishlamadi"
-// @Router       /tenders/{id}/bids [get]
+// @Router       /tenders/{id}/my/bids [get]
 func (h *Handler) GetTenderBids(c *gin.Context) {
 	req := model.GetTenderBidsReqSwag{}
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -262,7 +262,7 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 
 
 // @Summary      Tanlangan taklifni belgilash
-// @Description  Tender uchun tanlangan taklifni "awarded" sifatida belgilash
+// @Description  Tender uchun tanlangan taklifni statusini o'zgartirish
 // @Tags         Client
 // @Accept       json
 // @Produce      json
@@ -271,7 +271,7 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 // @Success      200  {object} model.SubmitBitResp "Taklif muvaffaqiyatli belgilandi"
 // @Failure      400  {object} model.Error         "Ma'lumotlarni olishda xatolik"
 // @Failure      500  {object} model.Error         "Server xatosi yoki BidAwarded funksiyasi ishlamadi"
-// @Router       /tenders/{id}/bids [post]
+// @Router       /tenders/status_change/{id}/bids [post]
 func (h *Handler) SubmitBit(c *gin.Context) {
 	req := model.SubmitBitReqSwag{}
 	err := c.ShouldBindJSON(&req)

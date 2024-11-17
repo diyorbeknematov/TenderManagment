@@ -134,10 +134,10 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 
 // @Summary      Get tenders by filters
 // @Description  Retrieve a list of tenders filtered by status or other parameters
-// @Tags         Tenders
+// @Tags         Contractor
 // @Accept       json
 // @Produce      json
-// @Param        status query string false "Filter by status (e.g., open, closed)"
+// @Param        status query string false "Filter by status (e.g., open, closed, awarded)"
 // @Success      200 {array} model.Tender "List of tenders"
 // @Failure      400 {object} model.Error "Invalid request"
 // @Failure      500 {object} model.Error "Server error"
@@ -187,4 +187,33 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 
 	// Javobni qaytarish
 	c.JSON(http.StatusOK, gin.H{"tenders": tenders})
+}
+
+// @Summary      Get Bid History for a Contractor
+// @Description  Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline
+// @Tags         Contractor
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "User ID"
+// @Success      200 {array} model.BidHistory "List of bid history"
+// @Failure      400 {object} model.Error "Invalid input"
+// @Failure      500 {object} model.Error "Failed to retrieve bid history"
+// @Router       /users/{id}/bids [get]
+func (h *Handler) GetMyBidHistory(c *gin.Context) {
+	userID := c.Param("id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, model.Error{Message: "user_id is required"})
+		h.Log.Error("user_id is required")
+		return
+	}
+
+	// Pass the pointer to the GetMyBidsInput struct
+	bidHistory, err := h.Service.GetMyBidHistory(&model.GetMyBidsInput{UserID: userID})
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("GetMyBidHistory request error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to retrieve bid history: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, bidHistory)
 }

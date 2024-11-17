@@ -26,6 +26,7 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		h.Log.Error(fmt.Sprintf("Requestni structga o'qishda xatolik bor: %v", err))
 		ctx.JSON(model.ErrInvalidInput.Code, model.ErrInvalidInput)
+		return
 	}
 
 	exists, err := h.Service.IsUserExists(model.IsUserExists{
@@ -36,17 +37,20 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Userni bor yoki yo'qligini tekshirishda xatolik: %v", err))
 		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
 	}
 
 	if !exists {
 		h.Log.Error("User oldin ro'yxatdan o'tgan")
 		ctx.JSON(model.ErrEmailAlreadyExists.Code, model.ErrEmailAlreadyExists)
+		return
 	}
 
 	resp, err := h.Service.Registration(user)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Userni bor yoki yo'qligini tekshirishda xatolik: %v", err))
 		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, resp)
@@ -69,12 +73,14 @@ func (h *Handler) LoginHandler(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&login); err != nil {
 		h.Log.Error(fmt.Sprintf("Requestni structga o'qishda xatolik bor: %v", err))
 		ctx.JSON(model.ErrInvalidInput.Code, model.ErrInvalidInput)
+		return
 	}
 
 	resp, err := h.Service.GetUserByUsername(login)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Userni username va password boyicha login qilishda xatolik: %v", err))
 		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
 	}
 
 	accessToken, err := token.GenerateAccessToken(model.Token{
@@ -85,6 +91,7 @@ func (h *Handler) LoginHandler(ctx *gin.Context) {
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Error accesstoken generate qilishda xatolik: %v", err))
 		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
 	}
 
 	refreshToken, err := token.GenerateRefreshToken(model.Token{
@@ -95,6 +102,7 @@ func (h *Handler) LoginHandler(ctx *gin.Context) {
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Error refreshtoken generate qilishda xatolik: %v", err))
 		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, model.LoginResp{

@@ -4,10 +4,12 @@ import (
 	"log"
 	"tender/api"
 	"tender/config"
-	"tender/logs"
+	"tender/pkg/check"
+	"tender/pkg/logs"
 	"tender/service"
 	"tender/storage"
 	"tender/storage/postgres"
+	"time"
 )
 
 func main() {
@@ -26,7 +28,10 @@ func main() {
 	service := service.NewService(storage, logger)
 
 	router := api.Router(service, logger)
-	
+
+	go check.StartTenderStatusUpdater(storage, time.Hour)
+
 	log.Printf("server is running...")
 	log.Fatal(router.Run(cfg.API_PORT))
+
 }

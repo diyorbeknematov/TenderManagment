@@ -32,3 +32,11 @@ test:
 
 swag-change: 
 	go get -u github.com/swaggo/swag
+
+ 
+# Projectni ishga tushirish
+run_db:
+	docker compose up -d redis-db database
+
+run:
+	docker compose up -d app

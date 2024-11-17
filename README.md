@@ -18,6 +18,22 @@ Autentifikatsiya: JWT (JSON Web Token)
 POST/register - foydalanuvchilarni royxatga oladi, foydalanuvchi o'z rolini o'zi tanlab registratsiya qiladi
 POST/login - foydalanuvchilarni tizmiga kirishi uchun access_token beradi
 
+Clint uchun API
+
+POST/tenders - Client uchun tender yaratish
+PUT/tenders/:id - Clint yaratgan tenderini id orqali yangilashi mumkin
+DELETE/tenders/:id  - Client o'z yaratgan tinderini id orqali o'chirishi mumkin
+GET/tenders - Client o'zi yaratgan tinderlar ro'yxatini olishi mumkin
+GET/tenders/:id/my/bids - Client o'zi yaratgan tenderini uchun yuborilgan bidlarni filterlab olishi mumkin
+POST/tenders/status_change/:id/bids - Client o'z tenderiga yuborilgan bidlarni statusini o'zgartirishi mumkin ya'ni, fail yoki award qilishi mumkin
+POST/tenders/:id/award/:bid_id - Client o'z tenderi uchun yuborilgan, bidlardan birini award wiladi va qolgan barcha bidlar fail bo'lib ketadi. Tenderni yakunlash
+GET/users/:id/tenders - userlar o'z tenderlarini tarixini ko'radi
+
+Contractor uchun API
+
+POST/tenders/
+
+
 Foydalanuvchilarni ro'yxatdan o'tkazish va tizimga kirish.
 Mijozlar tender e'lon qilishlari, pudratchilar esa tenderlarga taklif yuborishlari mumkin.
 JWT yordamida autentifikatsiya va ro'lga asoslangan ruxsatlar.

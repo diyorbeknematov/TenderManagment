@@ -8,10 +8,19 @@ import (
 	"tender/service"
 	"tender/storage"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+type Dependencies struct {
+	Logger         *slog.Logger
+	Enforcer       *casbin.Enforcer
+	RateLimiter    middleware.RateLimiter
+	ServiceManager service.Service
+	Storage        storage.Storage
+}
 
 // @title 						TENDER MANAGMENT API
 // @version 					0.1
@@ -24,17 +33,17 @@ import (
 // @in 							header
 // @name 						Authorization
 // @swagger:meta
-func Router(service service.Service, logger *slog.Logger, storage storage.Storage) *gin.Engine {
+func Router(deps *Dependencies) *gin.Engine {
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	h := handler.NewHandler(service, logger, storage)
+	h := handler.NewHandler(deps.ServiceManager, deps.Logger, deps.Storage)
 
 	router.POST("/register", h.RegistrationHandler)
 	router.POST("/login", h.LoginHandler)
 
 	tender := router.Group("/tenders")
-	tender.Use(middleware.AuthMiddleware(logger))
+	tender.Use(middleware.AuthMiddleware(deps.Logger))
 	{
 		tender.POST("", h.CreateTender)
 		tender.GET("", h.GetAllTenders)
@@ -48,7 +57,7 @@ func Router(service service.Service, logger *slog.Logger, storage storage.Storag
 		tender.GET("/all", h.GetTendersByFilters)
 	}
 
-	router.GET("/ws/notifications", middleware.AuthMiddleware(logger), h.WebSocketNotifications)
+	router.GET("/ws/notifications", middleware.AuthMiddleware(deps.Logger), h.WebSocketNotifications)
 
 	user := router.Group("/users")
 	{

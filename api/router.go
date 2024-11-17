@@ -42,6 +42,8 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 		tender.GET("/all", h.GetTendersByFilters)
 	}
 
+	router.GET("/ws/notifications", h.WebSocketNotifications)
+
 	user := router.Group("/users")
 	{
 		user.GET("/:id/bids", h.GetMyBidHistory)

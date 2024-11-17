@@ -1,10 +1,39 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"log/slog"
+	"tender/api/handler"
+	"tender/service"
 
-func Router() *gin.Engine {
+	"github.com/gin-gonic/gin"
+)
+
+// @title 						TENDER MANAGMENT API
+// @version 					0.1
+// @description 				This is a sample API.
+// @schemes 					http https
+// @BasePath 					/
+// @consumes 					application/json
+// @produces 					application/json
+// @securityDefinitions.apiKey 	Bearer
+// @in 							header
+// @name 						Authorization
+// @swagger:meta
+func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 	router := gin.Default()
-	
+
+	h := handler.NewHandler(service, logger)
+
+	tender := router.Group("/tenders")
+	{
+		tender.POST("", h.CreateTender)
+		tender.GET("", h.GetAllTenders)
+		tender.PUT("/:id", h.UpdateTender)
+		tender.DELETE("/:id", h.DeleteTender)
+		tender.GET("/:id/bids", h.GetTenderBids)
+		tender.POST("/:id/bids", h.SubmitBit)
+		tender.POST("/:id/award/:bid_id", h.AwardTender)
+	}
 
 	return router
 }

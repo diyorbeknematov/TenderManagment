@@ -79,13 +79,23 @@ type GetTenderBidsResp struct {
 	Count int   `json:"count"`
 }
 
-type BidAwardedReq struct {
+type SubmitBitReq struct {
 	ClientId string `json:"client_id"`
 	TenderId string `json:"tender_id"`
 	BidId    string `json:"bid_id"`
 	Status   string `json:"status"`
 }
 
-type BidAwardedResp struct {
+type SubmitBitResp struct {
+	Status bool `json:"status"`
+}
+
+type AwardTenderReq struct {
+	ClientId string `json:"client_id"`
+	TenderId string `json:"tender_id"`
+	Bidid    string `json:"bid_id"`
+}
+
+type AwardTenderResp struct{
 	Status bool `json:"status"`
 }

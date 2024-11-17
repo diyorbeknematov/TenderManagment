@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
+	"tender/api"
 	"tender/config"
 	"tender/logs"
+	"tender/service"
 	"tender/storage"
 	"tender/storage/postgres"
 )
@@ -19,4 +22,11 @@ func main() {
 	defer db.Close()
 
 	storage := storage.NewStorage(db, logger)
+
+	service := service.NewService(storage, logger)
+
+	router := api.Router(service, logger)
+	
+	log.Printf("server is running...")
+	log.Fatal(router.Run(cfg.API_PORT))
 }

@@ -9,7 +9,8 @@ import (
 type Storage interface {
 	Client() postgres.ClientRepo
 	RegistrationRepository() postgres.RegistrationRepository
-	NotificationRepository() postgres.NotificationRepository 
+	Contractor() postgres.BidRepository
+	NotificationRepository() postgres.NotificationRepository
 }
 
 type storageImpl struct {
@@ -34,4 +35,8 @@ func (S *storageImpl) RegistrationRepository() postgres.RegistrationRepository {
 
 func (S *storageImpl) NotificationRepository() postgres.NotificationRepository {
 	return postgres.NewNotificationRepository(S.DB, S.Log)
+}
+
+func (s *storageImpl) Contractor() postgres.BidRepository {
+	return postgres.NewBidRepository(s.DB)
 }

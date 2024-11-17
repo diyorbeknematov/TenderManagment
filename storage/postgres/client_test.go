@@ -25,103 +25,118 @@ func Test_CreateTender(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.CreateTender(&model.CreateTenderReq{
-		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
-		Title: "Uy qurilishi",
+		ClientId:    "f76b4c4b-da00-4957-bb88-b197e0ce739a",
+		Title:       "Uy qurilishi",
 		Description: "9 qavatli uy qurish kerak",
-		Diadline: "10-11-2025",
-		Budget: 50_000_000.0,
+		Diadline:    "10-11-2025",
+		Budget:      50_000_000.0,
 	})
-	if err != nil{
+	if err != nil {
 		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }
 
-func Test_UpdateTender(t *testing.T){
+func Test_UpdateTender(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.UpdateTender(&model.UpdateTenderReq{
-		Id: "97c71420-b902-434d-9ba0-e2d718451ead",
-		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
-		Title: "Uy qurilishi",
+		Id:          "97c71420-b902-434d-9ba0-e2d718451ead",
+		ClientId:    "f76b4c4b-da00-4957-bb88-b197e0ce739a",
+		Title:       "Uy qurilishi",
 		Description: "9 qavatli uy qurish kerak",
-		Diadline: "10-11-2025",
-		Budget: 50_000_000.0,
-		Status: "awarded",
+		Diadline:    "10-11-2025",
+		Budget:      50_000_000.0,
+		Status:      "awarded",
 	})
 
-	if err != nil{
+	if err != nil {
 		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }
 
-func Test_GetAllTenders(t *testing.T){
+func Test_GetAllTenders(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.GetAllTenders(&model.GetAllTendersReq{
 		ClientId: "f76b4c4b-da00-4957-bb88-b197e0ce739a",
-		Limit: 10,
-		Page: 1,
+		Limit:    10,
+		Page:     1,
 	})
 
-	if err != nil{
+	if err != nil {
 		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }
 
-func Test_DeleteTender(t *testing.T){
+func Test_DeleteTender(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.DeleteTender(&model.DeleteTenderReq{
-		Id: "708b0159-3763-4002-846f-c7e1d017a009",
+		Id:       "708b0159-3763-4002-846f-c7e1d017a009",
 		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
 	})
-	
-	if err != nil{
+
+	if err != nil {
 		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }
 
-func Test_GetTenderBids(t *testing.T){
+func Test_GetTenderBids(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.GetTenderBids(&model.GetTenderBidsReq{
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
-		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
+		ClientId:   "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		TenderId:   "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
 		StartPrice: 10_000_000.0,
-		EndPrice: 100_000_000.0,
-		StartDate: "01-01-2025",
-		EndDate: "01-01-2026",
-		Limit: 10,
-		Page: 1,
+		EndPrice:   100_000_000.0,
+		StartDate:  "01-01-2025",
+		EndDate:    "01-01-2026",
+		Limit:      10,
+		Page:       1,
 	})
 
-	if err != nil{
+	if err != nil {
 		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }
 
-func Test_BidAwarded(t *testing.T){
+func Test_SubmitBit(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
-	_, err := c.BidAwarded(&model.BidAwardedReq{
+	_, err := c.SubmitBit(&model.SubmitBitReq{
 		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
 		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
-		BidId: "",
-		Status: "Awarded",
+		BidId:    "",
+		Status:   "Awarded",
 	})
 
-	if err != nil{
+	if err != nil {
 		Logger.Error(err.Error())
+		t.Fatal(err)
+	}
+}
+
+func Test_AwardTender(t *testing.T) {
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
+
+	_, err := c.AwardTender(&model.AwardTenderReq{
+		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
+		Bidid:    "",
+	})
+
+	if err != nil {
 		t.Fatal(err)
 	}
 }

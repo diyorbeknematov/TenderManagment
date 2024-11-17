@@ -1,0 +1,13 @@
+p, client, /tenders, POST
+p, client, /tenders, GET
+p, client, /tenders/{id}, PUT
+p, client, /tenders/{id}, DELETE
+p, client, /tenders/{id}/bids, GET
+p, client, /tenders/{id}/status_change/{status}/bids, POST
+p, client, /tenders/{id}/award/{bid_id}, POST
+p, client, /users/{id}/tenders, GET
+
+p, contractor, /tenders/all, GET
+p, contractor, /tenders/{id}/bids, POST
+p, contractor, /tenders/{id}/bids, GET
+p, contractor, /users/{id}/bids, GET

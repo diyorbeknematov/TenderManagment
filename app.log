@@ -1,0 +1,5 @@
+{"time":"2024-11-17T11:25:49.641593035+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T11:26:07.137892504+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T11:26:12.117224895+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T11:26:29.502949396+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T11:26:41.478139565+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}

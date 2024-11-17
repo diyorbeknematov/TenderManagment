@@ -17,8 +17,8 @@ func TestCreateUser(t *testing.T) {
 	userRepo := storage.NewStorage(db, logs.InitLogger())
 
 	resp, err := userRepo.RegistrationRepository().CreateUser(model.UserRegisterReq{
-		Username: "diyorbeknematov",
-		Email:    "diyorbeknematov@gmail.com",
+		Username: "diyorbeknematov1",
+		Email:    "diyorbeknematov1@gmail.com",
 		Role:     "client",
 		Password: "123456789",
 	})

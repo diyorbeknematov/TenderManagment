@@ -20,7 +20,7 @@ type Config struct {
 }
 
 func LoadConfig() Config {
-	if err := godotenv.Load("./../../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println("error loading .env file or not found", err)
 	}
 
@@ -31,7 +31,7 @@ func LoadConfig() Config {
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
 	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "education_center"))
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "secret"))
-	config.API_PORT = cast.ToString(coalesce("API_PORT", "8080"))
+	config.API_PORT = cast.ToString(coalesce("API_PORT", ":8080"))
 	config.ACCESS_SECRET_KEY = cast.ToString(coalesce("ACCESS_SECRET_KEY", "secret"))
 	config.REFRESH_SECRET_KEY = cast.ToString(coalesce("REFRESH_SECRET_KEY", "secret"))
 	return config

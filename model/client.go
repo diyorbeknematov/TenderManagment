@@ -12,6 +12,13 @@ type CreateTenderReq struct {
 	Budget      float64 `json:"budget"`
 }
 
+type CreateTenderReqSwag struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Diadline    string  `json:"diadline"`
+	Budget      float64 `json:"budget"`
+}
+
 type CreateTenderResp struct {
 	Id        string `json:"id"`
 	Message   string `json:"message"`
@@ -50,6 +57,14 @@ type UpdateTenderReq struct {
 	Status      string  `json:"status"`
 }
 
+type UpdateTenderReqSwag struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Diadline    string  `json:"diadline"`
+	Budget      float64 `json:"budget"`
+	Status      string  `json:"status"`
+}
+
 type UpdateTenderResp struct {
 	Message string `json:"message"`
 }
@@ -74,6 +89,11 @@ type GetTenderBidsReq struct {
 	Page       int     `json:"page"`
 }
 
+type GetTenderBidsReqSwag struct {
+	StartDate  string  `json:"start_date" form:"start_date"`
+	EndDate    string  `json:"end_date" form:"end_date"`
+}
+
 type GetTenderBidsResp struct {
 	Bids  []Bid `json:"bids"`
 	Count int   `json:"count"`
@@ -86,6 +106,11 @@ type SubmitBitReq struct {
 	Status   string `json:"status"`
 }
 
+type SubmitBitReqSwag struct {
+	BidId    string `json:"bid_id"`
+	Status   string `json:"status"`
+}
+
 type SubmitBitResp struct {
 	Status bool `json:"status"`
 }
@@ -93,7 +118,7 @@ type SubmitBitResp struct {
 type AwardTenderReq struct {
 	ClientId string `json:"client_id"`
 	TenderId string `json:"tender_id"`
-	Bidid    string `json:"bid_id"`
+	BidId    string `json:"bid_id"`
 }
 
 type AwardTenderResp struct{

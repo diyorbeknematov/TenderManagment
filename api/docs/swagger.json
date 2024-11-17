@@ -1,0 +1,598 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample API.",
+        "title": "TENDER MANAGMENT API",
+        "contact": {},
+        "version": "0.1"
+    },
+    "basePath": "/",
+    "paths": {
+        "/tenders": {
+            "get": {
+                "description": "Tenderlar ro'yxatini olish uchun API endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tenderlar ro'yxatini olish",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Bir sahifadagi tenderlar soni (standart: 10)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Sahifa raqami (standart: 1)",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tenderlar muvaffaqiyatli qaytarildi",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetAllTendersResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Noto'g'ri parametrlar",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki GetAllTenders funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Yangi tender yaratish uchun API endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tender yaratish",
+                "parameters": [
+                    {
+                        "description": "Tender yaratish uchun talab qilinadigan ma'lumotlar",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateTenderReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tender muvaffaqiyatli yaratildi",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateTenderResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Ma'lumotlarni olishda xatolik",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki CreateTender funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{id}": {
+            "put": {
+                "description": "Mavjud tenderning ma'lumotlarini yangilash uchun API endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tender ma'lumotlarini yangilash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tenderni yangilash uchun talab qilinadigan ma'lumotlar",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateTenderReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tender ma'lumotlari muvaffaqiyatli yangilandi",
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateTenderResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Ma'lumotlarni olishda xatolik",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki UpdateTender funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Mavjud tenderni o'chirish uchun API endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tenderni o'chirish",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tenderning ID'si",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tender muvaffaqiyatli o'chirildi",
+                        "schema": {
+                            "$ref": "#/definitions/model.DeleteTenderResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki DeleteTender funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{id}/award/{bid_id}": {
+            "post": {
+                "description": "Tender uchun tanlangan taklifni \"awarded\" sifatida belgilash",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tanlangan taklifni belgilash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Taklif ID",
+                        "name": "bid_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Taklif muvaffaqiyatli belgilandi",
+                        "schema": {
+                            "$ref": "#/definitions/model.AwardTenderResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Yaroqsiz ma'lumot yoki noto'g'ri so'rov",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Tender yoki taklif topilmadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki AwardTender funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{id}/bids": {
+            "get": {
+                "description": "Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun API endpoint",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tenderga bildirilgan takliflarni olish",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID'si",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Bir sahifadagi takliflar soni (standart: 10)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Sahifa raqami (standart: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Takliflarning boshlang'ich narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 100.50)",
+                        "name": "start_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 500.75)",
+                        "name": "end_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Boshlanish sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tugash sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Takliflar muvaffaqiyatli qaytarildi",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetTenderBidsResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Ma'lumotlarni olishda xatolik",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki GetTenderBids funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Tender uchun tanlangan taklifni \"awarded\" sifatida belgilash",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Tanlangan taklifni belgilash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID'si",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Taklif haqida ma'lumot",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SubmitBitReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Taklif muvaffaqiyatli belgilandi",
+                        "schema": {
+                            "$ref": "#/definitions/model.SubmitBitResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Ma'lumotlarni olishda xatolik",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server xatosi yoki BidAwarded funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AwardTenderResp": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Bid": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "contractor_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tender_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateTenderReq": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "diadline": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateTenderResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.DeleteTenderResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Error": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetAllTendersResp": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "tenders": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tender"
+                    }
+                }
+            }
+        },
+        "model.GetTenderBidsResp": {
+            "type": "object",
+            "properties": {
+                "bids": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Bid"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SubmitBitReq": {
+            "type": "object",
+            "properties": {
+                "bid_id": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tender_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SubmitBitResp": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Tender": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "diadline": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateTenderReq": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "diadline": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateTenderResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

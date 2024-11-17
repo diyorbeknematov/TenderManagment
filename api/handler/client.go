@@ -265,7 +265,6 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-
 // @Summary      Tanlangan taklifni belgilash
 // @Description  Tender uchun tanlangan taklifni statusini o'zgartirish
 // @Tags         Client
@@ -285,6 +284,15 @@ func (h *Handler) SubmitBit(c *gin.Context) {
 		h.Log.Error(fmt.Sprintf("Ma'lumotlarni olishda xatolik: %v", err))
 		c.JSON(http.StatusBadRequest, model.Error{Message: "Ma'lumotlarni olishda xatolik: " + err.Error()})
 		return
+	}
+
+	idb, err := h.Storage.Contractor().GetUserIDByBidID(req.BidId)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
+	}
+	err = h.CreateNotification(idb, "look at your bid", "user bit role is changed", req.BidId)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
 	}
 
 	resp, err := h.Service.SubmitBit(&model.SubmitBitReq{
@@ -321,10 +329,20 @@ func (h *Handler) AwardTender(c *gin.Context) {
 		TenderId: c.Param("id"),
 		BidId:    c.Param("bid_id"),
 	})
+
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("AwardTender request error: %v", err))
 		c.JSON(http.StatusInternalServerError, model.Error{Message: "AwardTender funksiyasi ishlamadi: " + err.Error()})
 		return
+	}
+
+	idb, err := h.Storage.Contractor().GetUserIDByBidID(c.Param("bid_id"))
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
+	}
+	err = h.CreateNotification(idb, "your bid is awarded", "user bit role is changed", c.Param("bid_id"))
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -370,8 +388,8 @@ func (h *Handler) GetMyTenderHistory(c *gin.Context) {
 	// Cache-da ma'lumot yo'q, bazadan olish
 	resp, err := h.Storage.Client().GetAllTenders(&model.GetAllTendersReq{
 		ClientId: clientID,
-		Limit: 1000,
-		Page: 1,
+		Limit:    1000,
+		Page:     1,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("GetMyTenderHistory request error: %v", err))

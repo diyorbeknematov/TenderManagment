@@ -53,6 +53,15 @@ func (h *Handler) CreateBid(c *gin.Context) {
 		return
 	}
 
+	idb, err := h.Storage.Client().GetUserByTebderId(prid)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
+	}
+	err = h.CreateNotification(idb, "someone is bid you tender", "someone bid you", prid)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error sending notification: %v", err))
+	}
+
 	c.JSON(http.StatusOK, gin.H{"success": resp})
 }
 

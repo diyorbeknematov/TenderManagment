@@ -21,9 +21,9 @@ type UserRegisterReq struct {
 }
 
 type UserRegisterResp struct {
-	ID        string `json:"id"`
-	Message   string `json:"message"`
-	CreatedAt string `json:"created_at"`
+	ID       string `json:"id"`
+	Role     string `json:"role"`
+	Username string `json:"username"`
 }
 
 type GetUser struct {

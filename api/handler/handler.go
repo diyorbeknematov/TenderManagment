@@ -12,9 +12,10 @@ type Handler struct{
 	Storage storage.Storage
 }
 
-func NewHandler(service service.Service, logger *slog.Logger)*Handler{
+func NewHandler(service service.Service, logger *slog.Logger, storage storage.Storage)*Handler{
 	return &Handler{
 		Service: service,
 		Log: logger,
+		Storage: storage,
 	}
 }

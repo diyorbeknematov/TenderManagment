@@ -11,7 +11,7 @@ func (S *Service) CreateTender(req *model.CreateTenderReq) (*model.CreateTenderR
 		S.Log.Error("Budget 0 dan kichik bo'lishi mumkin emas")
 		return nil, fmt.Errorf("budget 0 dan kichik bo'lishi mumkin emas")
 	}
-	if time.Now().String() > req.Diadline {
+	if len(req.Diadline) != 0 && time.Now().String() > req.Diadline {
 		S.Log.Error("Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
 		return nil, fmt.Errorf("diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
 	}
@@ -68,10 +68,6 @@ func (S *Service) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBi
 	if req.StartPrice < 0 || req.EndPrice < 0 {
 		S.Log.Error("Deadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
 		return nil, fmt.Errorf("budget 0 dan kichik bo'lishi mumkin emas")
-	}
-	if time.Now().String() > req.StartDate || time.Now().String() > req.EndDate {
-		S.Log.Error("Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
-		return nil, fmt.Errorf("diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
 	}
 	clientId, err := S.Storage.Client().GetUserByTebderId(req.TenderId)
 	if err != nil {

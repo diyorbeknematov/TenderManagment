@@ -121,6 +121,11 @@ const docTemplate = `{
         },
         "/tenders": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Tenderlar ro'yxatini olish uchun API endpoint",
                 "consumes": [
                     "application/json"
@@ -168,6 +173,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Yangi tender yaratish uchun API endpoint",
                 "consumes": [
                     "application/json"
@@ -186,7 +196,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateTenderReq"
+                            "$ref": "#/definitions/model.CreateTenderReqSwag"
                         }
                     }
                 ],
@@ -214,6 +224,11 @@ const docTemplate = `{
         },
         "/tenders/all": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieve a list of tenders filtered by status or other parameters",
                 "consumes": [
                     "application/json"
@@ -260,6 +275,11 @@ const docTemplate = `{
         },
         "/tenders/status_change/{id}/bids": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Tender uchun tanlangan taklifni statusini o'zgartirish",
                 "consumes": [
                     "application/json"
@@ -285,7 +305,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.SubmitBitReq"
+                            "$ref": "#/definitions/model.SubmitBitReqSwag"
                         }
                     }
                 ],
@@ -313,6 +333,11 @@ const docTemplate = `{
         },
         "/tenders/{id}": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Mavjud tenderning ma'lumotlarini yangilash uchun API endpoint",
                 "consumes": [
                     "application/json"
@@ -338,7 +363,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UpdateTenderReq"
+                            "$ref": "#/definitions/model.UpdateTenderReqSwag"
                         }
                     }
                 ],
@@ -364,6 +389,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Mavjud tenderni o'chirish uchun API endpoint",
                 "consumes": [
                     "application/json"
@@ -402,6 +432,11 @@ const docTemplate = `{
         },
         "/tenders/{id}/award/{bid_id}": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Tender uchun tanlangan taklifni \"awarded\" sifatida belgilash",
                 "consumes": [
                     "application/json"
@@ -459,6 +494,11 @@ const docTemplate = `{
         },
         "/tenders/{id}/bids": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Contractor can get all bids of a tender with optional filters",
                 "consumes": [
                     "application/json"
@@ -516,6 +556,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Contractor can create bid to teender",
                 "consumes": [
                     "application/json"
@@ -569,6 +614,11 @@ const docTemplate = `{
         },
         "/tenders/{id}/my/bids": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Client o'z tenderi uchun bildirilgan barcha takliflarni olish uchun API endpoint",
                 "consumes": [
                     "application/json"
@@ -649,6 +699,11 @@ const docTemplate = `{
         },
         "/users/{id}/bids": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline",
                 "consumes": [
                     "application/json"
@@ -687,6 +742,55 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Failed to retrieve bid history",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/tenders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Foydalanuvchi (client) uchun barcha tender tarixini qaytaradi. Cache-dan foydalanadi.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Foydalanuvchi tender tarixini olish",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Foydalanuvchi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetAllTendersResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Client ID kiritilmagan",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ichki xatolik yoki ma'lumot olinmadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -793,14 +897,11 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateTenderReq": {
+        "model.CreateTenderReqSwag": {
             "type": "object",
             "properties": {
                 "budget": {
                     "type": "number"
-                },
-                "client_id": {
-                    "type": "string"
                 },
                 "description": {
                     "type": "string"
@@ -893,19 +994,13 @@ const docTemplate = `{
                 }
             }
         },
-        "model.SubmitBitReq": {
+        "model.SubmitBitReqSwag": {
             "type": "object",
             "properties": {
                 "bid_id": {
                     "type": "string"
                 },
-                "client_id": {
-                    "type": "string"
-                },
                 "status": {
-                    "type": "string"
-                },
-                "tender_id": {
                     "type": "string"
                 }
             }
@@ -947,22 +1042,16 @@ const docTemplate = `{
                 }
             }
         },
-        "model.UpdateTenderReq": {
+        "model.UpdateTenderReqSwag": {
             "type": "object",
             "properties": {
                 "budget": {
                     "type": "number"
                 },
-                "client_id": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
                 "diadline": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 },
                 "status": {

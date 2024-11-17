@@ -193,7 +193,7 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 
 	for rows.Next() {
 		var bid model.Bid
-		err = rows.Scan(&bid.ID, &bid.TenderID, &bid.ContractorID, &bid.Price, &bid.Price, &bid.DeliveryTime, &bid.Comments, &bid.Status, &bid.CreatedAt)
+		err = rows.Scan(&bid.ID, &bid.TenderID, &bid.ContractorID, &bid.Price, &bid.DeliveryTime, &bid.Comments, &bid.Status, &bid.CreatedAt)
 		if err != nil {
 			C.Log.Error(fmt.Sprintf("Bid ma'lumotlarini o'zlashtirishda xatolik: %v", err))
 			return nil, err

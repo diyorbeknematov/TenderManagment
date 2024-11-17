@@ -4,7 +4,9 @@ import (
 	"log/slog"
 	_ "tender/api/docs"
 	"tender/api/handler"
+	"tender/api/middleware"
 	"tender/service"
+	"tender/storage"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -22,23 +24,25 @@ import (
 // @in 							header
 // @name 						Authorization
 // @swagger:meta
-func Router(service service.Service, logger *slog.Logger) *gin.Engine {
+func Router(service service.Service, logger *slog.Logger, storage storage.Storage) *gin.Engine {
 	router := gin.Default()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	h := handler.NewHandler(service, logger)
+	h := handler.NewHandler(service, logger, storage)
 
 	router.POST("/register", h.RegistrationHandler)
 	router.POST("/login", h.LoginHandler)
+	
 
 	tender := router.Group("/tenders")
+	tender.Use(middleware.AuthMiddleware(logger))
 	{
 		tender.POST("", h.CreateTender)
 		tender.GET("", h.GetAllTenders)
 		tender.PUT("/:id", h.UpdateTender)
 		tender.DELETE("/:id", h.DeleteTender)
 		tender.GET("/:id/my/bids", h.GetTenderBids)
-		tender.POST("/status_change/{id}/bids", h.SubmitBit)
+		tender.POST("/status_change/:id/bids", h.SubmitBit)
 		tender.POST("/:id/award/:bid_id", h.AwardTender)
 		tender.POST("/:id/bids", h.CreateBid)
 		tender.GET("/:id/bids", h.GetBidsOfTender)
@@ -50,6 +54,7 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 	user := router.Group("/users")
 	{
 		user.GET("/:id/bids", h.GetMyBidHistory)
+		user.GET("/:id/tenders", h.GetMyTenderHistory)
 	}
 	return router
 }

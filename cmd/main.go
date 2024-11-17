@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"tender/api"
+	"tender/api/middleware"
 	"tender/config"
+	"tender/pkg/casbin"
 	"tender/pkg/check"
 	"tender/pkg/logs"
 	"tender/service"
@@ -27,11 +29,22 @@ func main() {
 	rdb := redisDB.Connect()
 	defer rdb.Close()
 
+	casbin, err := casbin.CasbinEnforcer(logger)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	storage := storage.NewStorage(db, rdb, logger)
 
 	service := service.NewService(storage, logger)
 
-	router := api.Router(service, logger, storage)
+	router := api.Router(&api.Dependencies{
+		ServiceManager: service,
+		Enforcer:       casbin,
+		Storage:        storage,
+		RateLimiter:    *middleware.NewRateLimiter(5, 1),
+		Logger:         logger,
+	})
 
 	go check.StartTenderStatusUpdater(storage, time.Hour)
 

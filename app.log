@@ -18,3 +18,9 @@
 {"time":"2024-11-17T12:58:03.063465+05:00","level":"ERROR","msg":"UserID not found in context"}
 {"time":"2024-11-17T13:00:42.445285+05:00","level":"ERROR","msg":"UserID not found in context"}
 {"time":"2024-11-17T13:00:43.907106+05:00","level":"ERROR","msg":"UserID not found in context"}
+{"time":"2024-11-17T13:01:03.225495526+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:01:03.225815556+05:00","level":"ERROR","msg":"Tender ma'lumotlari databazaga saqlanmadi: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:01:03.225827735+05:00","level":"ERROR","msg":"CreateTender request error: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:01:32.672382374+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:01:32.672415351+05:00","level":"ERROR","msg":"Tender ma'lumotlari databazaga saqlanmadi: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:01:32.672421424+05:00","level":"ERROR","msg":"CreateTender request error: pq: invalid input syntax for type uuid: \"\""}

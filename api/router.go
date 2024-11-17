@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	_ "tender/api/docs"
 	"tender/api/handler"
+	"tender/api/middleware"
 	"tender/service"
 
 	"github.com/gin-gonic/gin"
@@ -30,8 +31,10 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 
 	router.POST("/register", h.RegistrationHandler)
 	router.POST("/login", h.LoginHandler)
+	
 
 	tender := router.Group("/tenders")
+	tender.Use(middleware.AuthMiddleware(logger))
 	{
 		tender.POST("", h.CreateTender)
 		tender.GET("", h.GetAllTenders)

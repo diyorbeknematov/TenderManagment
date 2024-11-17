@@ -35,6 +35,9 @@ swag-change:
 
  
 # Projectni ishga tushirish
+make network:
+	docker network create tender
+
 run_db:
 	docker compose up -d redis-db database
 

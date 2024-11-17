@@ -77,51 +77,23 @@ Loyihani ishga tushirish uchun quyidagi qadamlarni bajarishingiz kerak:
 1. Ma'lumotlar bazasini sozlash
 Ma'lumotlar bazasini Docker yordamida ishga tushirish uchun quyidagi komandani bajarishingiz kerak:
 
-bash
-Copy code
 make run_db
 2. Loyihani ishga tushirish
 Loyihani va boshqa zarur xizmatlarni ishga tushirish uchun quyidagi komandani bajarish kerak:
 
-bash
-Copy code
 make run
 Bu komanda, Golang ilovasini konteynerda ishga tushiradi va barcha kerakli xizmatlarni ishga tushuradi.
 
-🏅 Baholash Mezonalari
-Avtomatik testlar: 100 bal
-Real-time yangilanishlar: 40 bal
-Keshlash: 30 bal
-Rate Limiting: 30 bal
-Jami: 200 bal
+
 📄 API hujjatlari
 Loyihada barcha API'lar uchun hujjatlar Swagger yordamida taqdim etiladi. Swagger UI orqali barcha API metodlari va ularga tegishli parametrlarni ko'rishingiz mumkin.
 
 Swagger hujjatiga kirish uchun Swagger UI ga tashrif buyurishingiz mumkin.
 
-🔧 Kodek sifatiga qo'yiladigan talablar
-To'g'ri ishlash: Loyiha barcha funktsional talablarni qondirishi kerak.
-Kod sifati: Kodni toza, modulli va yaxshi hujjatlashtirilgan holda yozish.
-Xavfsizlik: Foydalanuvchi autentifikatsiyasi va ro'lga asoslangan ruxsatlar to'g'ri ishlashini ta'minlash.
-Ishlash samaradorligi: Katta ma'lumotlar to'plamini samarali ishlashini ta'minlash.
-📦 O'rnatish va ishlatish
-Loyihani lokal kompyuteringizda o'rnatish uchun quyidagi qadamlarni bajarishingiz mumkin:
-
 Git repozitoriyasini klonlash:
-bash
-Copy code
 git clone https://github.com/golanguzb70/golang-compition-2024.git
 cd golang-compition-2024
 Zarur bo'lgan barcha kutubxonalarni o'rnatish:
-bash
-Copy code
 go mod tidy
 Loyihani ishga tushirish:
-bash
-Copy code
 make run
-💬 Aloqa
-Agar sizda savollar bo'lsa yoki yordam kerak bo'lsa, biz bilan bog'lanishingiz mumkin.
-
-GitHub Issues: Issues page
-Email: support@tender-management.com

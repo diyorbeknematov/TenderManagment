@@ -8,6 +8,8 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - tender
   
   database:
     image: postgres:latest
@@ -25,6 +27,8 @@ services:
       - "5454:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - tender
 
   migrate:
     image: migrate/migrate
@@ -38,6 +42,8 @@ services:
         condition: service_healthy
     volumes:
       - ./db/migrations:/migrations
+    networks:
+      - tender
     
   app:
     build:
@@ -55,6 +61,8 @@ services:
     depends_on:
       - database
       - redis
+    networks:
+      - tender
 
 volumes:
   db_data:

@@ -2,17 +2,20 @@ package service
 
 import (
 	"log/slog"
+	// "tender/pkg/websocket"
 	"tender/storage"
 )
 
 type Service struct {
-	Storage storage.Storage
-	Log     *slog.Logger
+	Storage          storage.Storage
+	// webSocketManager *websocket.Manager
+	Log              *slog.Logger
 }
 
-func NewService(storage storage.Storage, logger *slog.Logger) Service {
+func NewService(storage storage.Storage, logger *slog.Logger, /*wsManager *websocket.Manager*/) Service {
 	return Service{
-		Storage: storage,
-		Log:     logger,
+		Storage:          storage,
+		// webSocketManager: wsManager,
+		Log:              logger,
 	}
 }

@@ -39,10 +39,11 @@ package postgres_test
 
 // 	UserRepo := storage.NewStorage(db, logs.InitLogger())
 
-// 	resp, err := UserRepo.RegistrationRepository().GetUserByEmail("diyorbeknematov@gmail.com")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+
+	// resp, err := UserRepo.RegistrationRepository().GetUserByUsername("diyorbeknematov@gmail.com")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
 // 	assert.NotNil(t, resp)
 // }

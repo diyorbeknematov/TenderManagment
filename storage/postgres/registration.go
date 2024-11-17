@@ -9,7 +9,7 @@ import (
 
 type RegistrationRepository interface {
 	CreateUser(user model.UserRegisterReq) (*model.UserRegisterResp, error)
-	GetUserByEmail(email  string) (*model.GetUser, error)
+	GetUserByUsername(email  string) (*model.GetUser, error)
 	IsUserExists(email, username string) (bool, error)
 }
 
@@ -57,21 +57,21 @@ func (repo registrationRepositoryImpl) CreateUser(user model.UserRegisterReq) (*
 	return &userResp, err
 }
 
-func (repo registrationRepositoryImpl) GetUserByEmail(email string) (*model.GetUser, error) {
+func (repo registrationRepositoryImpl) GetUserByUsername(email string) (*model.GetUser, error) {
 	var user model.GetUser
 
 	err := repo.db.QueryRow(`
 		SELECT 
+			id,
 			username,
-			email,
 			role,
 			password
 		FROM users
 		WHERE
-			deleted_at IS NULL AND email = $1;
+			deleted_at IS NULL AND username = $1;
 	`, email).Scan(
+		&user.ID,
 		&user.Username,
-		&user.Email,
 		&user.Role,
 		&user.Password,
 	)

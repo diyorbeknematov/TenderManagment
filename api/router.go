@@ -28,6 +28,9 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 
 	h := handler.NewHandler(service, logger)
 
+	router.POST("/register", h.RegistrationHandler)
+	router.POST("/login", h.LoginHandler)
+
 	tender := router.Group("/tenders")
 	{
 		tender.POST("", h.CreateTender)

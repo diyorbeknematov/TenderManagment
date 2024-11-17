@@ -3,8 +3,8 @@ package postgres
 import (
 	"database/sql"
 	"log/slog"
-	"tender/logs"
 	"tender/model"
+	"tender/pkg/logs"
 	"testing"
 )
 

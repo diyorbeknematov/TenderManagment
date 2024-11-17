@@ -12,13 +12,14 @@ import (
 
 type ClientRepo interface {
 	CreateTender(req *model.CreateTenderReq) (*model.CreateTenderResp, error)
-	GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTendersResp, error) 
+	GetAllTenders(req *model.GetAllTendersReq) (*model.GetAllTendersResp, error)
 	UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTenderResp, error)
 	DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderResp, error)
-	GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) 
-	SubmitBit(req *model.SubmitBitReq)(*model.SubmitBitResp, error)
-	AwardTender(req *model.AwardTenderReq)(*model.AwardTenderResp, error)
-	GetUserByTebderId(tenderId string)(string, error)
+	GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error)
+	SubmitBit(req *model.SubmitBitReq) (*model.SubmitBitResp, error)
+	AwardTender(req *model.AwardTenderReq) (*model.AwardTenderResp, error)
+	GetUserByTebderId(tenderId string) (string, error)
+	CloseExpiredTenders() error
 }
 
 type clientImpl struct {
@@ -184,7 +185,7 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	query += fmt.Sprintf(" OFFSET %v", offset)
 
 	rows, err := C.DB.Query(query, param...)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Ma'lumotlarni olishda xatolik: %v", err))
 		return nil, err
 	}
@@ -193,7 +194,7 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	for rows.Next() {
 		var bid model.Bid
 		err = rows.Scan(&bid.ID, &bid.TenderID, &bid.ContractorID, &bid.Price, &bid.Price, &bid.DeliveryTime, &bid.Comments, &bid.Status, &bid.CreatedAt)
-		if err != nil{
+		if err != nil {
 			C.Log.Error(fmt.Sprintf("Bid ma'lumotlarini o'zlashtirishda xatolik: %v", err))
 			return nil, err
 		}
@@ -201,25 +202,25 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	}
 
 	err = C.DB.QueryRow(count_query, param...).Scan(&count)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Bidlar sonini olishda xatolik: %v", err))
 		return nil, err
 	}
 
 	return &model.GetTenderBidsResp{
-		Bids: bids,
+		Bids:  bids,
 		Count: count,
 	}, nil
 }
 
-func (C *clientImpl) SubmitBit(req *model.SubmitBitReq)(*model.SubmitBitResp, error){
+func (C *clientImpl) SubmitBit(req *model.SubmitBitReq) (*model.SubmitBitResp, error) {
 	query := `
 				UPDATE bids SET
 					status = $1 
 				WHERE 
 					id = $2 AND deleted_at IS NULL`
 	_, err := C.DB.Exec(query, req.Status, req.BidId)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Bid statusi yangilanmadi: %v", err))
 		return nil, err
 	}
@@ -229,9 +230,9 @@ func (C *clientImpl) SubmitBit(req *model.SubmitBitReq)(*model.SubmitBitResp, er
 	}, nil
 }
 
-func (C *clientImpl) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderResp, error){
+func (C *clientImpl) AwardTender(req *model.AwardTenderReq) (*model.AwardTenderResp, error) {
 	tr, err := C.DB.Begin()
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Tranzaksiya yaratishda xatolik: %v", err))
 		return nil, err
 	}
@@ -255,7 +256,7 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderRe
 				WHERE
 					tender_id = $2 AND id != $3 AND deleted_at IS NULL`
 	_, err = tr.Exec(query, "fail", req.TenderId, req.BidId)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Contractorlargaga fail berishda xatolik: %v", err))
 		tr.Rollback()
 		return nil, err
@@ -267,7 +268,7 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderRe
 				WHERE 
 					client_id = $2 AND id = $3 AND deleted_at IS NULL`
 	_, err = tr.Exec(query, "awarded", req.ClientId, req.TenderId)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("Tender statusini o'zgartirishda xatolik: %v", err))
 		tr.Rollback()
 		return nil, err
@@ -278,7 +279,7 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderRe
 	}, nil
 }
 
-func (C *clientImpl) GetUserByTebderId(tenderId string)(string, error){
+func (C *clientImpl) GetUserByTebderId(tenderId string) (string, error) {
 	var userId string
 	query := `
 				SELECT 
@@ -288,10 +289,26 @@ func (C *clientImpl) GetUserByTebderId(tenderId string)(string, error){
 				WHERE
 					id = $1 AND deleted_at IS NULL`
 	err := C.DB.QueryRow(query, tenderId).Scan(&userId)
-	if err != nil{
+	if err != nil {
 		C.Log.Error(fmt.Sprintf("TenderId bo'yicha ClientIdisini olishda xatolik: %v", err))
 		return "", err
 	}
 
 	return userId, nil
+}
+
+func (s *clientImpl) CloseExpiredTenders() error {
+	query := `
+		UPDATE tenders
+		SET status = 'close', updated_at = NOW()
+		WHERE status = 'open' AND deadline < NOW();
+	`
+	result, err := s.DB.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to update expired tenders: %w", err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	fmt.Printf("Expired tenders updated: %d\n", rowsAffected)
+	return nil
 }

@@ -26,29 +26,38 @@ func (s *Service) CreateBid(req *model.CreateBidInput) (*string, error) {
 	return &bidID, nil
 }
 
-func (s *Service) GetTendersByFilters(req *model.GetTendersInput) (*[]model.Tender, error) {
+func (s *Service) GetTendersByFilters(req *model.GetTendersInput) ([]model.Tender, error) {
 	tenders, err := s.Storage.Contractor().GetTendersByFilters(*req)
 	if err != nil {
 		s.Log.Error(fmt.Sprintf("Fetching tenders failed: %v", err))
 		return nil, err
 	}
-	return &tenders, nil
+	return tenders, nil
 }
 
-func (s *Service) GetBidsForTenderWithFilters(req *model.GetBidsInput) (*[]model.Bid, error) {
+func (s *Service) GetBidsForTenderWithFilters(req *model.GetBidsInput) ([]model.Bid, error) {
 	bids, err := s.Storage.Contractor().GetBidsForTenderWithFilters(*req)
 	if err != nil {
 		s.Log.Error(fmt.Sprintf("Fetching bids failed: %v", err))
 		return nil, err
 	}
-	return &bids, nil
+	return bids, nil
 }
 
-func (s *Service) GetMyBidHistory(req *model.GetMyBidsInput) (*[]model.BidHistory, error) {
+func (s *Service) GetMyBidHistory(req *model.GetMyBidsInput) ([]model.BidHistory, error) {
 	history, err := s.Storage.Contractor().GetMyBidHistory(*req)
 	if err != nil {
 		s.Log.Error(fmt.Sprintf("Fetching bid history failed: %v", err))
 		return nil, err
 	}
-	return &history, nil
+	return history, nil
+}
+
+func (s *Service) GetUserIDByBidID(req string) (*string, error) {
+	id, err := s.Storage.Contractor().GetUserIDByBidID(req)
+	if err != nil {
+		s.Log.Error(fmt.Sprintf("Fetching bid history failed: %v", err))
+		return nil, err
+	}
+	return &id, nil
 }

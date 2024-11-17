@@ -354,7 +354,7 @@ func (h *Handler) AwardTender(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
+// @Security     Bearer
 // @Param        id   path      string  true  "Foydalanuvchi ID"
 // @Success      200  {object}  model.GetAllTendersResp
 // @Failure      400  {object}  model.Error  "Client ID kiritilmagan"

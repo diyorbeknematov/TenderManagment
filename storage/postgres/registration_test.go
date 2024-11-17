@@ -2,8 +2,8 @@ package postgres_test
 
 import (
 	"tender/config"
-	"tender/logs"
 	"tender/model"
+	"tender/pkg/logs"
 	"tender/storage"
 	"tender/storage/postgres"
 	"testing"

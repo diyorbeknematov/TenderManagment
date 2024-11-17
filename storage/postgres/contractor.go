@@ -12,6 +12,7 @@ type BidRepository interface {
 	GetTendersByFilters(model.GetTendersInput) ([]model.Tender, error)
 	GetBidsForTenderWithFilters(model.GetBidsInput) ([]model.Bid, error)
 	GetMyBidHistory(model.GetMyBidsInput) ([]model.BidHistory, error)
+	GetUserIDByBidID(string) (string, error)
 }
 
 type bidRepositoryImpl struct {
@@ -149,4 +150,21 @@ func (b bidRepositoryImpl) GetMyBidHistory(input model.GetMyBidsInput) ([]model.
 		history = append(history, bid)
 	}
 	return history, nil
+}
+
+func (b bidRepositoryImpl) GetUserIDByBidID(bidID string) (string, error) {
+	var userID string
+	query := `
+        SELECT contractor_id
+        FROM bids
+        WHERE id = $1 AND deleted_at IS NULL;
+    `
+	err := b.db.QueryRow(query, bidID).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("no user found for bid ID: %s", bidID)
+		}
+		return "", fmt.Errorf("failed to get user ID by bid ID: %w", err)
+	}
+	return userID, nil
 }

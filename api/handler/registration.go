@@ -65,7 +65,20 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, resp)
+	token, err := token.GenerateToken(model.Token{
+		ID:       resp.ID,
+		Username: resp.Username,
+		Role:     resp.Role,
+	})
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Error accesstoken generate qilishda xatolik: %v", err))
+		ctx.JSON(model.ErrInternalServerError.Code, model.ErrInternalServerError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
 }
 
 // @Summary 	Login
@@ -81,7 +94,6 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 // @Router 		/login [post]
 func (h *Handler) LoginHandler(ctx *gin.Context) {
 	var login model.LoginUser
-
 
 	if err := ctx.ShouldBindJSON(&login); err != nil {
 		h.Log.Error(fmt.Sprintf("Requestni structga o'qishda xatolik bor: %v", err))
@@ -107,7 +119,7 @@ func (h *Handler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, model.LoginResp{
-		Token: token,
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
 	})
 }

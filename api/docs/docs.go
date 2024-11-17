@@ -753,7 +753,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Foydalanuvchi (client) uchun barcha tender tarixini qaytaradi. Cache-dan foydalanadi.",

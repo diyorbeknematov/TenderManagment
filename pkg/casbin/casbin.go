@@ -6,7 +6,7 @@ import (
 )
 
 func CasbinEnforcer(logger *slog.Logger) (*casbin.Enforcer, error) {
-	enforcer, err := casbin.NewEnforcer("./model.conf", "./policy.csv")
+	enforcer, err := casbin.NewEnforcer("pkg/casbin/model.conf", "pkg/casbin/policy.csv")
 	if err != nil {
 		logger.Error("Error creating Casbin enforcer", "error", err.Error())
 		return nil, err

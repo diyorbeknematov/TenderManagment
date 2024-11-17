@@ -20,9 +20,6 @@ create_mig:
 
 swag:
 	~/go/bin/swag init -g ./api/router.go -o api/docs
-	
-run:
-	go run cmd/main.go
 
 tidy:
 	go mod tidy

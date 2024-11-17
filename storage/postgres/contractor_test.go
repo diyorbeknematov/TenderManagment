@@ -15,8 +15,8 @@ func TestCreateBid(t *testing.T) {
 
 	resp, err := Bidrepo.CreateBid(
 		model.CreateBidInput{
-			TenderID:     "ff80539c-3e53-4cd8-a62a-7e0bc2465640",
-			ContractorID: "0b214112-8f65-434d-bb4c-b5f7be5337ab",
+			TenderID:     "2de1f098-a446-4f47-aa14-d2c8a4f985bc",
+			ContractorID: "99f13ede-f029-4ba6-bc90-c28269f82fdc",
 			Price:        5000,
 			DeliveryTime: "07-10-2024",
 			Comments:     "Sample comment",

@@ -1,0 +1,396 @@
+basePath: /
+definitions:
+  model.AwardTenderResp:
+    properties:
+      status:
+        type: boolean
+    type: object
+  model.Bid:
+    properties:
+      comments:
+        type: string
+      contractor_id:
+        type: string
+      created_at:
+        type: string
+      delivery_time:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      status:
+        type: string
+      tender_id:
+        type: string
+    type: object
+  model.CreateTenderReq:
+    properties:
+      budget:
+        type: number
+      client_id:
+        type: string
+      description:
+        type: string
+      diadline:
+        type: string
+      title:
+        type: string
+    type: object
+  model.CreateTenderResp:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+    type: object
+  model.DeleteTenderResp:
+    properties:
+      message:
+        type: string
+    type: object
+  model.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  model.GetAllTendersResp:
+    properties:
+      count:
+        type: integer
+      tenders:
+        items:
+          $ref: '#/definitions/model.Tender'
+        type: array
+    type: object
+  model.GetTenderBidsResp:
+    properties:
+      bids:
+        items:
+          $ref: '#/definitions/model.Bid'
+        type: array
+      count:
+        type: integer
+    type: object
+  model.SubmitBitReq:
+    properties:
+      bid_id:
+        type: string
+      client_id:
+        type: string
+      status:
+        type: string
+      tender_id:
+        type: string
+    type: object
+  model.SubmitBitResp:
+    properties:
+      status:
+        type: boolean
+    type: object
+  model.Tender:
+    properties:
+      budget:
+        type: number
+      client_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      diadline:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  model.UpdateTenderReq:
+    properties:
+      budget:
+        type: number
+      client_id:
+        type: string
+      description:
+        type: string
+      diadline:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  model.UpdateTenderResp:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a sample API.
+  title: TENDER MANAGMENT API
+  version: "0.1"
+paths:
+  /tenders:
+    get:
+      consumes:
+      - application/json
+      description: Tenderlar ro'yxatini olish uchun API endpoint
+      parameters:
+      - description: 'Bir sahifadagi tenderlar soni (standart: 10)'
+        in: query
+        name: limit
+        type: integer
+      - description: 'Sahifa raqami (standart: 1)'
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tenderlar muvaffaqiyatli qaytarildi
+          schema:
+            $ref: '#/definitions/model.GetAllTendersResp'
+        "400":
+          description: Noto'g'ri parametrlar
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki GetAllTenders funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tenderlar ro'yxatini olish
+      tags:
+      - Client
+    post:
+      consumes:
+      - application/json
+      description: Yangi tender yaratish uchun API endpoint
+      parameters:
+      - description: Tender yaratish uchun talab qilinadigan ma'lumotlar
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateTenderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tender muvaffaqiyatli yaratildi
+          schema:
+            $ref: '#/definitions/model.CreateTenderResp'
+        "400":
+          description: Ma'lumotlarni olishda xatolik
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki CreateTender funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tender yaratish
+      tags:
+      - Client
+  /tenders/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Mavjud tenderni o'chirish uchun API endpoint
+      parameters:
+      - description: Tenderning ID'si
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tender muvaffaqiyatli o'chirildi
+          schema:
+            $ref: '#/definitions/model.DeleteTenderResp'
+        "500":
+          description: Server xatosi yoki DeleteTender funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tenderni o'chirish
+      tags:
+      - Client
+    put:
+      consumes:
+      - application/json
+      description: Mavjud tenderning ma'lumotlarini yangilash uchun API endpoint
+      parameters:
+      - description: Tender ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Tenderni yangilash uchun talab qilinadigan ma'lumotlar
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTenderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Tender ma'lumotlari muvaffaqiyatli yangilandi
+          schema:
+            $ref: '#/definitions/model.UpdateTenderResp'
+        "400":
+          description: Ma'lumotlarni olishda xatolik
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki UpdateTender funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tender ma'lumotlarini yangilash
+      tags:
+      - Client
+  /tenders/{id}/award/{bid_id}:
+    post:
+      consumes:
+      - application/json
+      description: Tender uchun tanlangan taklifni "awarded" sifatida belgilash
+      parameters:
+      - description: Tender ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Taklif ID
+        in: path
+        name: bid_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Taklif muvaffaqiyatli belgilandi
+          schema:
+            $ref: '#/definitions/model.AwardTenderResp'
+        "400":
+          description: Yaroqsiz ma'lumot yoki noto'g'ri so'rov
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Tender yoki taklif topilmadi
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki AwardTender funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tanlangan taklifni belgilash
+      tags:
+      - Client
+  /tenders/{id}/bids:
+    get:
+      consumes:
+      - application/json
+      description: Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun
+        API endpoint
+      parameters:
+      - description: Tender ID'si
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Bir sahifadagi takliflar soni (standart: 10)'
+        in: query
+        name: limit
+        type: integer
+      - description: 'Sahifa raqami (standart: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Takliflarning boshlang''ich narxi (filtrlash uchun ixtiyoriy,
+          float qiymat ko''rinishida yozilishi kerak, masalan: 100.50)'
+        in: query
+        name: start_price
+        type: string
+      - description: 'Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float
+          qiymat ko''rinishida yozilishi kerak, masalan: 500.75)'
+        in: query
+        name: end_price
+        type: string
+      - description: 'Boshlanish sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'Tugash sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Takliflar muvaffaqiyatli qaytarildi
+          schema:
+            $ref: '#/definitions/model.GetTenderBidsResp'
+        "400":
+          description: Ma'lumotlarni olishda xatolik
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki GetTenderBids funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tenderga bildirilgan takliflarni olish
+      tags:
+      - Client
+    post:
+      consumes:
+      - application/json
+      description: Tender uchun tanlangan taklifni "awarded" sifatida belgilash
+      parameters:
+      - description: Tender ID'si
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Taklif haqida ma'lumot
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.SubmitBitReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Taklif muvaffaqiyatli belgilandi
+          schema:
+            $ref: '#/definitions/model.SubmitBitResp'
+        "400":
+          description: Ma'lumotlarni olishda xatolik
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server xatosi yoki BidAwarded funksiyasi ishlamadi
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Tanlangan taklifni belgilash
+      tags:
+      - Client
+schemes:
+- http
+- https
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

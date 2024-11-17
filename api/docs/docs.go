@@ -748,6 +748,55 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{id}/tenders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Foydalanuvchi (client) uchun barcha tender tarixini qaytaradi. Cache-dan foydalanadi.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Foydalanuvchi tender tarixini olish",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Foydalanuvchi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetAllTendersResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Client ID kiritilmagan",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ichki xatolik yoki ma'lumot olinmadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

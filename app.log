@@ -21,3 +21,28 @@
 {"time":"2024-11-17T13:01:32.672382374+05:00","level":"ERROR","msg":"Ma'lumotlarni databazaga saqlashda xatolik: pq: invalid input syntax for type uuid: \"\""}
 {"time":"2024-11-17T13:01:32.672415351+05:00","level":"ERROR","msg":"Tender ma'lumotlari databazaga saqlanmadi: pq: invalid input syntax for type uuid: \"\""}
 {"time":"2024-11-17T13:01:32.672421424+05:00","level":"ERROR","msg":"CreateTender request error: pq: invalid input syntax for type uuid: \"\""}
+{"time":"2024-11-17T13:05:29.919020185+05:00","level":"ERROR","msg":"Ma'lumotlarni yangilashda xatolik: pq: invalid input value for enum status_type: \"string\""}
+{"time":"2024-11-17T13:05:29.919289109+05:00","level":"ERROR","msg":"Tender ma'lumotlari databazada yangilanmadi: pq: invalid input value for enum status_type: \"string\""}
+{"time":"2024-11-17T13:05:29.919296131+05:00","level":"ERROR","msg":"UpdateTender request error: pq: invalid input value for enum status_type: \"string\""}
+{"time":"2024-11-17T13:08:27.49173195+05:00","level":"ERROR","msg":"No Authorization header"}
+{"time":"2024-11-17T13:10:40.754247112+05:00","level":"ERROR","msg":"Cache saqlashda xato: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:10:46.313808474+05:00","level":"ERROR","msg":"Cache saqlashda xato: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:11:20.946156076+05:00","level":"ERROR","msg":"CreateTender request error: invalid delivery time format: parsing time \"2026-01-01\" as \"02-01-2006\": cannot parse \"26-01-01\" as \"-\""}
+{"time":"2024-11-17T13:11:44.699352171+05:00","level":"ERROR","msg":"CreateTender request error: invalid delivery time format: parsing time \"26-01-01\" as \"02-01-2006\": cannot parse \"01\" as \"2006\""}
+{"time":"2024-11-17T13:12:08.978163976+05:00","level":"ERROR","msg":"CreateTender request error: invalid delivery time format: parsing time \"2026-01-01\" as \"02-01-2006\": cannot parse \"26-01-01\" as \"-\""}
+{"time":"2024-11-17T13:12:41.137162802+05:00","level":"ERROR","msg":"Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas"}
+{"time":"2024-11-17T13:12:41.137261132+05:00","level":"ERROR","msg":"GetTenderBids request error: diadline hozirgi vaqtdan ortda bo'lishi mumkin emas"}
+{"time":"2024-11-17T13:14:03.938015995+05:00","level":"ERROR","msg":"Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas"}
+{"time":"2024-11-17T13:14:03.938048012+05:00","level":"ERROR","msg":"GetTenderBids request error: diadline hozirgi vaqtdan ortda bo'lishi mumkin emas"}
+{"time":"2024-11-17T13:15:20.318472518+05:00","level":"ERROR","msg":"Bid ma'lumotlarini o'zlashtirishda xatolik: sql: expected 8 destination arguments in Scan, not 9"}
+{"time":"2024-11-17T13:15:20.318595671+05:00","level":"ERROR","msg":"Tender bidlarini databazadan olib bo'lmadi: sql: expected 8 destination arguments in Scan, not 9"}
+{"time":"2024-11-17T13:15:20.318604857+05:00","level":"ERROR","msg":"GetTenderBids request error: sql: expected 8 destination arguments in Scan, not 9"}
+{"time":"2024-11-17T13:16:42.299695588+05:00","level":"ERROR","msg":"Cache saqlashda xato: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:19:42.974080406+05:00","level":"ERROR","msg":"No Authorization header"}
+{"time":"2024-11-17T13:20:06.871224062+05:00","level":"ERROR","msg":"Cache saqlashda xato: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:20:12.852225067+05:00","level":"ERROR","msg":"Cache saqlashda xato: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:21:19.495212313+05:00","level":"ERROR","msg":"Failed to save to cache: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:21:54.421620341+05:00","level":"ERROR","msg":"Failed to save to cache: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:31:09.238851134+05:00","level":"ERROR","msg":"Failed to cache data for key tender_history_2d4158d2-e80b-4529-93ea-5b136ca58a04: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:31:57.622538152+05:00","level":"ERROR","msg":"Failed to cache data for key tender_history_2d4158d2-e80b-4529-93ea-5b136ca58a04: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T13:32:04.861305892+05:00","level":"ERROR","msg":"Failed to cache data for key tender_history_2d4158d2-e80b-4529-93ea-5b136ca58a04: redisga yozishda xato: dial tcp: lookup redis on 127.0.0.53:53: server misbehaving"}

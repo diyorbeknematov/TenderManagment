@@ -329,3 +329,68 @@ func (h *Handler) AwardTender(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
+
+// GetMyTenderHistory godoc
+// @Summary      Foydalanuvchi tender tarixini olish
+// @Description  Foydalanuvchi (client) uchun barcha tender tarixini qaytaradi. Cache-dan foydalanadi.
+// @Tags         Client
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        id   path      string  true  "Foydalanuvchi ID"
+// @Success      200  {object}  model.GetAllTendersResp
+// @Failure      400  {object}  model.Error  "Client ID kiritilmagan"
+// @Failure      500  {object}  model.Error  "Ichki xatolik yoki ma'lumot olinmadi"
+// @Router       /users/{id}/tenders [get]
+func (h *Handler) GetMyTenderHistory(c *gin.Context) {
+	clientID := c.Param("id")
+	if clientID == "" {
+		h.Log.Error("Client ID is required")
+		c.JSON(http.StatusBadRequest, model.Error{Message: "Client ID is required"})
+		return
+	}
+
+	// Cache kalitini yaratish
+	cacheKey := fmt.Sprintf("tender_history_%s", clientID)
+
+	// Cache-ni tekshirish
+	cachedData, err := h.Storage.Caching().GetCache(cacheKey)
+	if err == nil && cachedData != "" {
+		// Cache-dan ma'lumotni qaytarish
+		h.Log.Info(fmt.Sprintf("Cache hit for key: %s", cacheKey))
+		var cachedResp model.GetAllTendersResp
+		if err := json.Unmarshal([]byte(cachedData), &cachedResp); err == nil {
+			c.JSON(http.StatusOK, cachedResp)
+			return
+		} else {
+			h.Log.Error(fmt.Sprintf("Failed to unmarshal cached data: %v", err))
+		}
+	}
+
+	// Cache-da ma'lumot yo'q, bazadan olish
+	resp, err := h.Storage.Client().GetAllTenders(&model.GetAllTendersReq{
+		ClientId: clientID,
+		Limit: 1000,
+		Page: 1,
+	})
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("GetMyTenderHistory request error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "GetMyTenderHistory funksiyasi ishlamadi: " + err.Error()})
+		return
+	}
+
+	// Cache-ga yozish
+	respData, err := json.Marshal(resp)
+	if err == nil {
+		if err := h.Storage.Caching().SetCache(cacheKey, string(respData), time.Hour*1); err != nil {
+			h.Log.Error(fmt.Sprintf("Failed to cache data for key %s: %v", cacheKey, err))
+		} else {
+			h.Log.Info(fmt.Sprintf("Cached response for key: %s", cacheKey))
+		}
+	} else {
+		h.Log.Error(fmt.Sprintf("Failed to marshal response for caching: %v", err))
+	}
+
+	// Javobni qaytarish
+	c.JSON(http.StatusOK, resp)
+}

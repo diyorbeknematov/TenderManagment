@@ -28,6 +28,10 @@ func (s *Service) UpdateNotification(notif model.UpdateNotification) (*model.Upd
 }
 
 func (s *Service) GetAllNotifications(filter model.NotifFilter) (*model.AllNotifications, error) {
+	if filter.IsRead == "false" {
+		filter.IsRead = "false"
+	}
+
 	resp, err := s.Storage.NotificationRepository().GetAllNotifications(filter)
 
 	if err != nil {

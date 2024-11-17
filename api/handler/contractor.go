@@ -16,6 +16,7 @@ import (
 // @Tags         Contractor
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        body body model.CreateBid true "bid infos (DeliveryTime format: dd-mm-yyyy)"
 // @Param        id path string true "Tender id"
 // @Success      200 {object} string "success"
@@ -60,6 +61,7 @@ func (h *Handler) CreateBid(c *gin.Context) {
 // @Tags         Contractor
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id path string true "Tender ID"
 // @Param        max_price query float64 false "Maximum price filter"
 // @Param        max_delivery_time query string false "Maximum delivery time filter (ISO8601 format)"
@@ -137,6 +139,7 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 // @Tags         Contractor
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        status query string false "Filter by status (e.g., open, closed, awarded)"
 // @Success      200 {array} model.Tender "List of tenders"
 // @Failure      400 {object} model.Error "Invalid request"
@@ -194,6 +197,7 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 // @Tags         Contractor
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id path string true "User ID"
 // @Success      200 {array} model.BidHistory "List of bid history"
 // @Failure      400 {object} model.Error "Invalid input"

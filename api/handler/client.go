@@ -16,6 +16,7 @@ import (
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        body body model.CreateTenderReq true "Tender yaratish uchun talab qilinadigan ma'lumotlar"
 // @Success      200 {object} model.CreateTenderResp "Tender muvaffaqiyatli yaratildi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
@@ -51,6 +52,7 @@ func (h *Handler) CreateTender(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id   path      string                 true  "Tender ID"
 // @Param        body body      model.UpdateTenderReq  true  "Tenderni yangilash uchun talab qilinadigan ma'lumotlar"
 // @Success      200  {object}  model.UpdateTenderResp "Tender ma'lumotlari muvaffaqiyatli yangilandi"
@@ -89,6 +91,7 @@ func (h *Handler) UpdateTender(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id   path      string                 true  "Tenderning ID'si"
 // @Success      200  {object}  model.DeleteTenderResp "Tender muvaffaqiyatli o'chirildi"
 // @Failure      500  {object}  model.Error            "Server xatosi yoki DeleteTender funksiyasi ishlamadi"
@@ -170,6 +173,7 @@ func (h *Handler) GetAllTenders(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id           path     string true  "Tender ID'si"
 // @Param        limit        query    int    false "Bir sahifadagi takliflar soni (standart: 10)"
 // @Param        page         query    int    false "Sahifa raqami (standart: 1)"
@@ -266,6 +270,7 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id   path   string              true  "Tender ID'si"
 // @Param        body body   model.SubmitBitReq  true  "Taklif haqida ma'lumot"
 // @Success      200  {object} model.SubmitBitResp "Taklif muvaffaqiyatli belgilandi"
@@ -301,6 +306,7 @@ func (h *Handler) SubmitBit(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        id      path     string                 true  "Tender ID"
 // @Param        bid_id  path     string                 true  "Taklif ID"
 // @Success      200     {object} model.AwardTenderResp  "Taklif muvaffaqiyatli belgilandi"

@@ -1,15 +1,13 @@
-version: "3.9"
-
 services:
   redis-db:
     image: redis:latest
     container_name: redis
     ports: 
-      - "6379:6379"
+      - "6378:6379"
+    networks:
+      - tender 
     volumes:
       - redis_data:/data
-    networks:
-      - tender
   
   database:
     image: postgres:latest
@@ -25,10 +23,10 @@ services:
       timeout: 5s
     ports:
       - "5454:5432"
+    networks:
+      - tender 
     volumes:
       - db_data:/var/lib/postgresql/data
-    networks:
-      - tender
 
   migrate:
     image: migrate/migrate
@@ -40,10 +38,10 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - tender 
     volumes:
       - ./db/migrations:/migrations
-    networks:
-      - tender
     
   app:
     build:
@@ -60,10 +58,15 @@ services:
       REDIS_HOST: redis
     depends_on:
       - database
-      - redis
+      - redis-db
+      - migrate
     networks:
-      - tender
+      - tender  
 
 volumes:
   db_data:
   redis_data:
+
+networks:
+  tender:
+    driver: bridge

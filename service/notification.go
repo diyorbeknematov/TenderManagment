@@ -27,13 +27,9 @@ func (s *Service) UpdateNotification(notif model.UpdateNotification) (*model.Upd
 	return resp, nil
 }
 
-func (s *Service) GetAllNotifications(filter model.NotifFilter) (*model.AllNotifications, error) {
-	if filter.IsRead == "false" {
-		filter.IsRead = "false"
-	}
-
-	resp, err := s.Storage.NotificationRepository().GetAllNotifications(filter)
-
+func (s *Service) GetAllNotifications(filter model.NotifFilter) ([]model.Notification, error) {
+	s.Log.Info("working notification")
+	resp, err := s.Storage.NotificationRepository().GetUnreadNotifications(filter.UserID)
 	if err != nil {
 		s.Log.Error(fmt.Sprintf("Barcha notificationlarni olishda xatolik bor: %v", err))
 		return nil, err

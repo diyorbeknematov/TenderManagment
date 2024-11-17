@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"tender/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,11 +31,11 @@ func (h *Handler) CreateTender(c *gin.Context) {
 	}
 
 	resp, err := h.Service.CreateTender(&model.CreateTenderReq{
-		ClientId: c.GetString("UserID"),
-		Title: req.Title,
+		ClientId:    c.GetString("UserID"),
+		Title:       req.Title,
 		Description: req.Description,
-		Diadline: req.Diadline,
-		Budget: req.Budget,
+		Diadline:    req.Diadline,
+		Budget:      req.Budget,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("CreateTender request error: %v", err))
@@ -65,13 +67,13 @@ func (h *Handler) UpdateTender(c *gin.Context) {
 	}
 
 	resp, err := h.Service.UpdateTender(&model.UpdateTenderReq{
-		Id: c.Param("id"),
-		ClientId: c.GetString("UserID"),
-		Title: req.Title,
+		Id:          c.Param("id"),
+		ClientId:    c.GetString("UserID"),
+		Title:       req.Title,
 		Description: req.Description,
-		Diadline: req.Diadline,
-		Budget: req.Budget,
-		Status: req.Status,
+		Diadline:    req.Diadline,
+		Budget:      req.Budget,
+		Status:      req.Status,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("UpdateTender request error: %v", err))
@@ -93,7 +95,7 @@ func (h *Handler) UpdateTender(c *gin.Context) {
 // @Router       /tenders/{id} [delete]
 func (h *Handler) DeleteTender(c *gin.Context) {
 	resp, err := h.Service.DeleteTender(&model.DeleteTenderReq{
-		Id: c.Param("id"), 
+		Id:       c.Param("id"),
 		ClientId: c.GetString("UserID"),
 	})
 	if err != nil {
@@ -128,15 +130,36 @@ func (h *Handler) GetAllTenders(c *gin.Context) {
 		page = 1
 	}
 
+	clientID := c.GetString("UserID")
+	cacheKey := fmt.Sprintf("all_tenders:%s:%d:%d", clientID, limit, page)
+
+	cachedResponse, err := h.Storage.Caching().GetCache(cacheKey)
+	if err == nil && cachedResponse != "" {
+		c.JSON(http.StatusOK, cachedResponse)
+		return
+	}
+
 	resp, err := h.Service.GetAllTenders(&model.GetAllTendersReq{
-		ClientId: c.GetString("UserID"),
-		Limit: limit,
-		Page: page,
+		ClientId: clientID,
+		Limit:    limit,
+		Page:     page,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("GetAllTenders request error: %v", err))
 		c.JSON(http.StatusInternalServerError, model.Error{Message: "GetAllTenders funksiyasi ishlamadi: " + err.Error()})
 		return
+	}
+
+	respBytes, err := json.Marshal(resp)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Javobni marshaling qilishda xatolik"})
+		return
+	}
+
+	cacheErr := h.Storage.Caching().SetCache(cacheKey, string(respBytes), 5*time.Minute)
+	if cacheErr != nil {
+		h.Log.Error(fmt.Sprintf("Cache saqlashda xato: %v", cacheErr))
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -181,23 +204,37 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 
 	startPrice, err := strconv.ParseFloat(startPriceStr, 64)
 	if err != nil {
-	    startPrice = 0 // Standart qiymat
+		startPrice = 0 // Standart qiymat
 	}
 	endPrice, err := strconv.ParseFloat(endPriceStr, 64)
 	if err != nil {
-	    endPrice = 0 // Standart qiymat
+		endPrice = 0 // Standart qiymat
 	}
 
+	// Cache kalitini yaratish
+	clientID := c.GetString("UserID")
+	tenderID := c.Param("id")
+	cacheKey := fmt.Sprintf("tender_bids:%s:%s:%f:%f:%s:%s:%d:%d",
+		clientID, tenderID, startPrice, endPrice, req.StartDate, req.EndDate, limit, page)
 
+	// Cache’dan tekshirish
+	cachedResponse, err := h.Storage.Caching().GetCache(cacheKey)
+	if err == nil && cachedResponse != "" {
+		// Agar cache’da mavjud bo'lsa, uni qaytaramiz
+		c.JSON(http.StatusOK, cachedResponse)
+		return
+	}
+
+	// Cache’da ma'lumot yo'q bo'lsa, bazadan olish
 	resp, err := h.Service.GetTenderBids(&model.GetTenderBidsReq{
-		ClientId: c.GetString("UserID"),
-		TenderId: c.Param("id"),
+		ClientId:   clientID,
+		TenderId:   tenderID,
 		StartPrice: startPrice,
-		EndPrice: endPrice,
-		StartDate: req.StartDate,
-		EndDate: req.EndDate,
-		Limit: limit,
-		Page: page,
+		EndPrice:   endPrice,
+		StartDate:  req.StartDate,
+		EndDate:    req.EndDate,
+		Limit:      limit,
+		Page:       page,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("GetTenderBids request error: %v", err))
@@ -205,8 +242,24 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 		return
 	}
 
+	// Bazadan olingan javobni JSON formatida stringga o'zgartiramiz
+	respBytes, err := json.Marshal(resp)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Javobni marshaling qilishda xatolik"})
+		return
+	}
+
+	// Cache’ga saqlash (5 daqiqa davomida)
+	cacheErr := h.Storage.Caching().SetCache(cacheKey, string(respBytes), 5*time.Minute)
+	if cacheErr != nil {
+		h.Log.Error(fmt.Sprintf("Cache saqlashda xato: %v", cacheErr))
+	}
+
+	// Javobni foydalanuvchiga yuboramiz
 	c.JSON(http.StatusOK, resp)
 }
+
 
 // @Summary      Tanlangan taklifni belgilash
 // @Description  Tender uchun tanlangan taklifni "awarded" sifatida belgilash
@@ -231,8 +284,8 @@ func (h *Handler) SubmitBit(c *gin.Context) {
 	resp, err := h.Service.SubmitBit(&model.SubmitBitReq{
 		ClientId: c.GetString("UserID"),
 		TenderId: c.Param("id"),
-		BidId: req.BidId,
-		Status: req.Status,
+		BidId:    req.BidId,
+		Status:   req.Status,
 	})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("SubmitBit request error: %v", err))
@@ -259,13 +312,13 @@ func (h *Handler) AwardTender(c *gin.Context) {
 	resp, err := h.Service.AwardTender(&model.AwardTenderReq{
 		ClientId: c.GetString("UserID"),
 		TenderId: c.Param("id"),
-		BidId: c.Param("bid_id"),
+		BidId:    c.Param("bid_id"),
 	})
-	if err != nil{
+	if err != nil {
 		h.Log.Error(fmt.Sprintf("AwardTender request error: %v", err))
 		c.JSON(http.StatusInternalServerError, model.Error{Message: "AwardTender funksiyasi ishlamadi: " + err.Error()})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, resp)
 }

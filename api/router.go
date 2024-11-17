@@ -44,6 +44,7 @@ func Router(deps *Dependencies) *gin.Engine {
 
 	tender := router.Group("/tenders")
 	tender.Use(middleware.AuthMiddleware(deps.Logger))
+	tender.Use(middleware.AuthorizeMiddleware(deps.Logger, deps.Enforcer))
 	{
 		tender.POST("", h.CreateTender)
 		tender.GET("", h.GetAllTenders)
@@ -52,7 +53,7 @@ func Router(deps *Dependencies) *gin.Engine {
 		tender.GET("/:id/my/bids", h.GetTenderBids)
 		tender.POST("/status_change/:id/bids", h.SubmitBit)
 		tender.POST("/:id/award/:bid_id", h.AwardTender)
-		tender.POST("/:id/bids", h.CreateBid)
+		tender.POST("/:id/bids", deps.RateLimiter.Middleware(), h.CreateBid)
 		tender.GET("/:id/bids", h.GetBidsOfTender)
 		tender.GET("/all", h.GetTendersByFilters)
 	}
@@ -60,6 +61,8 @@ func Router(deps *Dependencies) *gin.Engine {
 	router.GET("/ws/notifications", middleware.AuthMiddleware(deps.Logger), h.WebSocketNotifications)
 
 	user := router.Group("/users")
+	user.Use(middleware.AuthMiddleware(deps.Logger))
+	user.Use(middleware.AuthorizeMiddleware(deps.Logger, deps.Enforcer))
 	{
 		user.GET("/:id/bids", h.GetMyBidHistory)
 		user.GET("/:id/tenders", h.GetMyTenderHistory)

@@ -135,12 +135,13 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 // @Tags         Contractor
 // @Accept       json
 // @Produce      json
+// @Param        id path string true "User ID"
 // @Success      200 {array} model.BidHistory "List of bid history"
 // @Failure      400 {object} model.Error "Invalid input"
 // @Failure      500 {object} model.Error "Failed to retrieve bid history"
-// @Router       /bids/history/{user_id} [get]
+// @Router       /users/{id}/bids [get]
 func (h *Handler) GetMyBidHistory(c *gin.Context) {
-	userID := c.GetString("UserID")
+	userID := c.Param("id")
 	if userID == "" {
 		c.JSON(http.StatusBadRequest, model.Error{Message: "user_id is required"})
 		h.Log.Error("user_id is required")

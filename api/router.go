@@ -2,6 +2,7 @@ package api
 
 import (
 	"log/slog"
+	_ "tender/api/docs"
 	"tender/api/handler"
 	"tender/service"
 
@@ -36,7 +37,14 @@ func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 		tender.GET("/:id/bids", h.GetTenderBids)
 		tender.POST("/:id/bids", h.SubmitBit)
 		tender.POST("/:id/award/:bid_id", h.AwardTender)
+		tender.POST("/:id/bids", h.CreateBid)
+		tender.GET("/:id/bids", h.GetBidsOfTender)
+		tender.GET("/all", h.GetTendersByFilters)
 	}
 
+	user := router.Group("/users")
+	{
+		user.GET("/:id/bids", h.GetMyBidHistory)
+	}
 	return router
 }

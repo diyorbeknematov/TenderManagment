@@ -12,44 +12,6 @@
     },
     "basePath": "/",
     "paths": {
-        "/bids/history/{user_id}": {
-            "get": {
-                "description": "Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Contractor"
-                ],
-                "summary": "Get Bid History for a Contractor",
-                "responses": {
-                    "200": {
-                        "description": "List of bid history",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.BidHistory"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to retrieve bid history",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/tenders": {
             "get": {
                 "description": "Tenderlar ro'yxatini olish uchun API endpoint",
@@ -438,6 +400,53 @@
                     },
                     "500": {
                         "description": "Server xatosi yoki CreateBid funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/bids": {
+            "get": {
+                "description": "Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contractor"
+                ],
+                "summary": "Get Bid History for a Contractor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of bid history",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.BidHistory"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve bid history",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }

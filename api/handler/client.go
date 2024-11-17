@@ -17,7 +17,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security 		Bearer
-// @Param        body body model.CreateTenderReq true "Tender yaratish uchun talab qilinadigan ma'lumotlar"
+// @Param        body body model.CreateTenderReqSwag true "Tender yaratish uchun talab qilinadigan ma'lumotlar"
 // @Success      200 {object} model.CreateTenderResp "Tender muvaffaqiyatli yaratildi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
 // @Failure      500 {object} model.Error "Server xatosi yoki CreateTender funksiyasi ishlamadi"
@@ -54,7 +54,7 @@ func (h *Handler) CreateTender(c *gin.Context) {
 // @Produce      json
 // @Security 		Bearer
 // @Param        id   path      string                 true  "Tender ID"
-// @Param        body body      model.UpdateTenderReq  true  "Tenderni yangilash uchun talab qilinadigan ma'lumotlar"
+// @Param        body body      model.UpdateTenderReqSwag  true  "Tenderni yangilash uchun talab qilinadigan ma'lumotlar"
 // @Success      200  {object}  model.UpdateTenderResp "Tender ma'lumotlari muvaffaqiyatli yangilandi"
 // @Failure      400  {object}  model.Error            "Ma'lumotlarni olishda xatolik"
 // @Failure      500  {object}  model.Error            "Server xatosi yoki UpdateTender funksiyasi ishlamadi"
@@ -115,6 +115,7 @@ func (h *Handler) DeleteTender(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
+// @Security 		Bearer
 // @Param        limit      query   int    false "Bir sahifadagi tenderlar soni (standart: 10)"
 // @Param        page       query   int    false "Sahifa raqami (standart: 1)"
 // @Success      200        {object} model.GetAllTendersResp "Tenderlar muvaffaqiyatli qaytarildi"
@@ -272,7 +273,7 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 // @Produce      json
 // @Security 		Bearer
 // @Param        id   path   string              true  "Tender ID'si"
-// @Param        body body   model.SubmitBitReq  true  "Taklif haqida ma'lumot"
+// @Param        body body   model.SubmitBitReqSwag  true  "Taklif haqida ma'lumot"
 // @Success      200  {object} model.SubmitBitResp "Taklif muvaffaqiyatli belgilandi"
 // @Failure      400  {object} model.Error         "Ma'lumotlarni olishda xatolik"
 // @Failure      500  {object} model.Error         "Server xatosi yoki BidAwarded funksiyasi ishlamadi"

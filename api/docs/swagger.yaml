@@ -63,12 +63,10 @@ definitions:
       price:
         type: number
     type: object
-  model.CreateTenderReq:
+  model.CreateTenderReqSwag:
     properties:
       budget:
         type: number
-      client_id:
-        type: string
       description:
         type: string
       diadline:
@@ -127,15 +125,11 @@ definitions:
       username:
         type: string
     type: object
-  model.SubmitBitReq:
+  model.SubmitBitReqSwag:
     properties:
       bid_id:
         type: string
-      client_id:
-        type: string
       status:
-        type: string
-      tender_id:
         type: string
     type: object
   model.SubmitBitResp:
@@ -162,17 +156,13 @@ definitions:
       title:
         type: string
     type: object
-  model.UpdateTenderReq:
+  model.UpdateTenderReqSwag:
     properties:
       budget:
         type: number
-      client_id:
-        type: string
       description:
         type: string
       diadline:
-        type: string
-      id:
         type: string
       status:
         type: string
@@ -307,6 +297,8 @@ paths:
           description: Server xatosi yoki GetAllTenders funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tenderlar ro'yxatini olish
       tags:
       - Client
@@ -320,7 +312,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.CreateTenderReq'
+          $ref: '#/definitions/model.CreateTenderReqSwag'
       produces:
       - application/json
       responses:
@@ -336,6 +328,8 @@ paths:
           description: Server xatosi yoki CreateTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tender yaratish
       tags:
       - Client
@@ -361,6 +355,8 @@ paths:
           description: Server xatosi yoki DeleteTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tenderni o'chirish
       tags:
       - Client
@@ -379,7 +375,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.UpdateTenderReq'
+          $ref: '#/definitions/model.UpdateTenderReqSwag'
       produces:
       - application/json
       responses:
@@ -395,6 +391,8 @@ paths:
           description: Server xatosi yoki UpdateTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tender ma'lumotlarini yangilash
       tags:
       - Client
@@ -433,6 +431,8 @@ paths:
           description: Server xatosi yoki AwardTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tanlangan taklifni belgilash
       tags:
       - Client
@@ -472,6 +472,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Get bids of tender
       tags:
       - Contractor
@@ -506,6 +508,8 @@ paths:
           description: Server xatosi yoki CreateBid funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Create bid
       tags:
       - Contractor
@@ -562,6 +566,8 @@ paths:
           description: Server xatosi yoki GetTenderBids funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tenderga bildirilgan takliflarni olish
       tags:
       - Client
@@ -592,6 +598,8 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Get tenders by filters
       tags:
       - Contractor
@@ -611,7 +619,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.SubmitBitReq'
+          $ref: '#/definitions/model.SubmitBitReqSwag'
       produces:
       - application/json
       responses:
@@ -627,6 +635,8 @@ paths:
           description: Server xatosi yoki BidAwarded funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Tanlangan taklifni belgilash
       tags:
       - Client
@@ -659,6 +669,8 @@ paths:
           description: Failed to retrieve bid history
           schema:
             $ref: '#/definitions/model.Error'
+      security:
+      - Bearer: []
       summary: Get Bid History for a Contractor
       tags:
       - Contractor

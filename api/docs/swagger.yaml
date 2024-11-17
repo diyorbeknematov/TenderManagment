@@ -187,11 +187,11 @@ definitions:
     type: object
   model.UserRegisterResp:
     properties:
-      created_at:
-        type: string
       id:
         type: string
-      message:
+      role:
+        type: string
+      username:
         type: string
     type: object
 info:
@@ -290,10 +290,6 @@ paths:
           schema:
             $ref: '#/definitions/model.GetAllTendersResp'
         "400":
-          description: Noto'g'ri parametrlar
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki GetAllTenders funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -321,10 +317,6 @@ paths:
           schema:
             $ref: '#/definitions/model.CreateTenderResp'
         "400":
-          description: Ma'lumotlarni olishda xatolik
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki CreateTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -351,7 +343,7 @@ paths:
           description: Tender muvaffaqiyatli o'chirildi
           schema:
             $ref: '#/definitions/model.DeleteTenderResp'
-        "500":
+        "400":
           description: Server xatosi yoki DeleteTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -384,10 +376,6 @@ paths:
           schema:
             $ref: '#/definitions/model.UpdateTenderResp'
         "400":
-          description: Ma'lumotlarni olishda xatolik
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki UpdateTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -420,15 +408,11 @@ paths:
           schema:
             $ref: '#/definitions/model.AwardTenderResp'
         "400":
-          description: Yaroqsiz ma'lumot yoki noto'g'ri so'rov
+          description: Server xatosi yoki AwardTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
         "404":
           description: Tender yoki taklif topilmadi
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
-          description: Server xatosi yoki AwardTender funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
       security:
@@ -465,10 +449,6 @@ paths:
               $ref: '#/definitions/model.Bid'
             type: array
         "400":
-          description: Bad request error
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Internal server error
           schema:
             $ref: '#/definitions/model.Error'
@@ -501,10 +481,6 @@ paths:
           schema:
             type: string
         "400":
-          description: error
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki CreateBid funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -539,7 +515,7 @@ paths:
         name: start_price
         type: string
       - description: 'Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float
-          qiymat ko''rinishida yozilishi kerak, masalan: 500.75)'
+          qiymat ko''rinishida yozilishi kerak, masalan: 400.75)'
         in: query
         name: end_price
         type: string
@@ -559,10 +535,6 @@ paths:
           schema:
             $ref: '#/definitions/model.GetTenderBidsResp'
         "400":
-          description: Ma'lumotlarni olishda xatolik
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki GetTenderBids funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -591,10 +563,6 @@ paths:
               $ref: '#/definitions/model.Tender'
             type: array
         "400":
-          description: Invalid request
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server error
           schema:
             $ref: '#/definitions/model.Error'
@@ -628,10 +596,6 @@ paths:
           schema:
             $ref: '#/definitions/model.SubmitBitResp'
         "400":
-          description: Ma'lumotlarni olishda xatolik
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Server xatosi yoki BidAwarded funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
@@ -662,10 +626,6 @@ paths:
               $ref: '#/definitions/model.BidHistory'
             type: array
         "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Failed to retrieve bid history
           schema:
             $ref: '#/definitions/model.Error'
@@ -694,10 +654,6 @@ paths:
           schema:
             $ref: '#/definitions/model.GetAllTendersResp'
         "400":
-          description: Client ID kiritilmagan
-          schema:
-            $ref: '#/definitions/model.Error'
-        "500":
           description: Ichki xatolik yoki ma'lumot olinmadi
           schema:
             $ref: '#/definitions/model.Error'

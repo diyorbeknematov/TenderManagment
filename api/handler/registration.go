@@ -3,11 +3,18 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"tender/api/token"
 	"tender/model"
 
 	"github.com/gin-gonic/gin"
 )
+
+func IsValidEmail(email string) bool {
+	const emailRegex = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	re := regexp.MustCompile(emailRegex)
+	return re.MatchString(email)
+}
 
 // @Summary 	Registarion
 // @Description Registration
@@ -26,6 +33,11 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		h.Log.Error(fmt.Sprintf("Requestni structga o'qishda xatolik bor: %v", err))
 		ctx.JSON(model.ErrInvalidInput.Code, model.ErrInvalidInput)
+		return
+	}
+
+	if IsValidEmail(user.Email) {
+		ctx.JSON(400, "email is incorrect format")
 		return
 	}
 
@@ -69,6 +81,7 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 // @Router 		/login [post]
 func (h *Handler) LoginHandler(ctx *gin.Context) {
 	var login model.LoginUser
+
 
 	if err := ctx.ShouldBindJSON(&login); err != nil {
 		h.Log.Error(fmt.Sprintf("Requestni structga o'qishda xatolik bor: %v", err))

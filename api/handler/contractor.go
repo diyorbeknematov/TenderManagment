@@ -21,7 +21,7 @@ import (
 // @Param        id path string true "Tender id"
 // @Success      200 {object} string "success"
 // @Failure      400 {object} model.Error "error"
-// @Failure      500 {object} model.Error "Server xatosi yoki CreateBid funksiyasi ishlamadi"
+// @Failure      400 {object} model.Error "Server xatosi yoki CreateBid funksiyasi ishlamadi"
 // @Router       /tenders/{id}/bids [post]
 func (h *Handler) CreateBid(c *gin.Context) {
 	req := model.CreateBid{}
@@ -49,7 +49,7 @@ func (h *Handler) CreateBid(c *gin.Context) {
 
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("CreateTender request error: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "CreateBid funksiyasi ishlamadi: " + err.Error()})
+		c.JSON(400, model.Error{Message: "CreateBid funksiyasi ishlamadi: " + err.Error()})
 		return
 	}
 
@@ -76,7 +76,7 @@ func (h *Handler) CreateBid(c *gin.Context) {
 // @Param        max_delivery_time query string false "Maximum delivery time filter (ISO8601 format)"
 // @Success      200 {object} []model.Bid "List of bids"
 // @Failure      400 {object} model.Error "Bad request error"
-// @Failure      500 {object} model.Error "Internal server error"
+// @Failure      400 {object} model.Error "Internal server error"
 // @Router       /tenders/{id}/bids [get]
 func (h *Handler) GetBidsOfTender(c *gin.Context) {
 	tenderID := c.Param("id")
@@ -121,7 +121,7 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 	bids, err := h.Service.GetBidsForTenderWithFilters(&input)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Failed to fetch bids for tender %s: %v", tenderID, err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to fetch bids"})
+		c.JSON(400, model.Error{Message: "Failed to fetch bids"})
 		return
 	}
 
@@ -129,7 +129,7 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 	bidsBytes, err := json.Marshal(bids)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to process bids"})
+		c.JSON(400, model.Error{Message: "Failed to process bids"})
 		return
 	}
 
@@ -152,7 +152,7 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 // @Param        status query string false "Filter by status (e.g., open, closed, awarded)"
 // @Success      200 {array} model.Tender "List of tenders"
 // @Failure      400 {object} model.Error "Invalid request"
-// @Failure      500 {object} model.Error "Server error"
+// @Failure      400 {object} model.Error "Server error"
 // @Router       /tenders/all [get]
 func (h *Handler) GetTendersByFilters(c *gin.Context) {
 	// Kiruvchi ma'lumotlarni olish
@@ -179,7 +179,7 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 	tenders, err := h.Service.GetTendersByFilters(&input)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Failed to fetch tenders: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to fetch tenders: " + err.Error()})
+		c.JSON(400, model.Error{Message: "Failed to fetch tenders: " + err.Error()})
 		return
 	}
 
@@ -187,7 +187,7 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 	tendersBytes, err := json.Marshal(tenders)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to process tenders"})
+		c.JSON(400, model.Error{Message: "Failed to process tenders"})
 		return
 	}
 
@@ -210,7 +210,7 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 // @Param        id path string true "User ID"
 // @Success      200 {array} model.BidHistory "List of bid history"
 // @Failure      400 {object} model.Error "Invalid input"
-// @Failure      500 {object} model.Error "Failed to retrieve bid history"
+// @Failure      400 {object} model.Error "Failed to retrieve bid history"
 // @Router       /users/{id}/bids [get]
 func (h *Handler) GetMyBidHistory(c *gin.Context) {
 	userID := c.Param("id")
@@ -224,7 +224,7 @@ func (h *Handler) GetMyBidHistory(c *gin.Context) {
 	bidHistory, err := h.Service.GetMyBidHistory(&model.GetMyBidsInput{UserID: userID})
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("GetMyBidHistory request error: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to retrieve bid history: " + err.Error()})
+		c.JSON(400, model.Error{Message: "Failed to retrieve bid history: " + err.Error()})
 		return
 	}
 

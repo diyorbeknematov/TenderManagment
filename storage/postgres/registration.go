@@ -9,7 +9,7 @@ import (
 
 type RegistrationRepository interface {
 	CreateUser(user model.UserRegisterReq) (*model.UserRegisterResp, error)
-	GetUserByUsername(email  string) (*model.GetUser, error)
+	GetUserByUsername(email string) (*model.GetUser, error)
 	IsUserExists(email, username string) (bool, error)
 }
 
@@ -40,19 +40,19 @@ func (repo registrationRepositoryImpl) CreateUser(user model.UserRegisterReq) (*
 		)
 		RETURNING
 			id,
-			created_at
+			username,
+			role
 	`, user.Username, user.Email, user.Role, user.Password).
 		Scan(
 			&userResp.ID,
-			&userResp.CreatedAt,
+			&userResp.Username,
+			&userResp.Role,
 		)
 
 	if err != nil {
 		repo.logger.Error(fmt.Sprintf("Register qilishda xatolik bor: %v", err))
 		return nil, err
 	}
-
-	userResp.Message = "User registered successfully"
 
 	return &userResp, err
 }

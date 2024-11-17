@@ -9,6 +9,7 @@ import (
 	"tender/service"
 	"tender/storage"
 	"tender/storage/postgres"
+	redisDB "tender/storage/redis"
 	"time"
 )
 
@@ -23,7 +24,10 @@ func main() {
 	}
 	defer db.Close()
 
-	storage := storage.NewStorage(db, logger)
+	rdb := redisDB.Connect()
+	defer rdb.Close()
+
+	storage := storage.NewStorage(db, rdb, logger)
 
 	service := service.NewService(storage, logger)
 

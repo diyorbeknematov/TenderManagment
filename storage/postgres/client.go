@@ -147,7 +147,7 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	var count int
 	query := `
 				SELECT 
-					id, tender_id, contractor_id, price, deleviry_time, comments, status, created_at
+					id, tender_id, contractor_id, price, delivery_time, comments, status, created_at
 				FROM 
 					bids
 				WHERE
@@ -162,23 +162,23 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	param = append(param, req.TenderId)
 	if len(req.StartDate) > 0 {
 		param = append(param, req.StartDate)
-		query += fmt.Sprintf(" delivery_time >= $%v", len(param))
-		count_query += fmt.Sprintf(" delivery_time >= $%v", len(param))
+		query += fmt.Sprintf(" AND delivery_time >= $%v", len(param))
+		count_query += fmt.Sprintf(" AND delivery_time >= $%v", len(param))
 	}
 	if len(req.EndDate) > 0 {
 		param = append(param, req.EndDate)
-		query += fmt.Sprintf(" delivery_time <= $%v", len(param))
-		count_query += fmt.Sprintf(" delivery_time <= $%v", len(param))
+		query += fmt.Sprintf(" AND delivery_time <= $%v", len(param))
+		count_query += fmt.Sprintf(" AND delivery_time <= $%v", len(param))
 	}
 	if req.StartPrice >= 0.0 {
 		param = append(param, req.StartPrice)
-		query += fmt.Sprintf(" price >= $%v", len(param))
-		count_query += fmt.Sprintf(" price >= $%v", len(param))
+		query += fmt.Sprintf(" AND price >= $%v", len(param))
+		count_query += fmt.Sprintf(" AND price >= $%v", len(param))
 	}
 	if req.EndPrice > 0.0 {
 		param = append(param, req.EndPrice)
-		query += fmt.Sprintf(" price <= $%v", len(param))
-		count_query += fmt.Sprintf(" price <= $%v", len(param))
+		query += fmt.Sprintf(" AND price <= $%v", len(param))
+		count_query += fmt.Sprintf(" AND price <= $%v", len(param))
 	}
 	query += fmt.Sprintf(" LIMIT %v", req.Limit)
 	offset := (req.Page - 1) * req.Limit
@@ -243,8 +243,8 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq) (*model.AwardTenderR
 					status = $1
 				WHERE
 					tender_id = $2 AND id = $3 AND deleted_at IS NULL`
-	_, err = tr.Exec(query, "award", req.TenderId, req.Bidid)
-	if err != nil {
+	_, err = tr.Exec(query, "award", req.TenderId, req.BidId)
+	if err != nil{
 		C.Log.Error(fmt.Sprintf("Contractorga award berishda xatolik: %v", err))
 		tr.Rollback()
 		return nil, err
@@ -255,7 +255,7 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq) (*model.AwardTenderR
 					status = $1
 				WHERE
 					tender_id = $2 AND id != $3 AND deleted_at IS NULL`
-	_, err = tr.Exec(query, "fail", req.TenderId, req.Bidid)
+	_, err = tr.Exec(query, "fail", req.TenderId, req.BidId)
 	if err != nil {
 		C.Log.Error(fmt.Sprintf("Contractorlargaga fail berishda xatolik: %v", err))
 		tr.Rollback()
@@ -266,7 +266,7 @@ func (C *clientImpl) AwardTender(req *model.AwardTenderReq) (*model.AwardTenderR
 				UPDATE tenders SET 
 					status = $1
 				WHERE 
-					client_id = $1 AND id = $2 AND deleted_at IS NULL`
+					client_id = $2 AND id = $3 AND deleted_at IS NULL`
 	_, err = tr.Exec(query, "awarded", req.ClientId, req.TenderId)
 	if err != nil {
 		C.Log.Error(fmt.Sprintf("Tender statusini o'zgartirishda xatolik: %v", err))

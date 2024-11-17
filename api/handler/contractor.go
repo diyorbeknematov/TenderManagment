@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"tender/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,10 +75,10 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 		return
 	}
 
-	maxPrice, maxPriceErr := c.Query("max_price"), 0.0
+	maxPrice, maxPriceValue := c.Query("max_price"), 0.0
 	if len(maxPrice) > 0 {
 		var err error
-		maxPriceErr, err = strconv.ParseFloat(maxPrice, 64)
+		maxPriceValue, err = strconv.ParseFloat(maxPrice, 64)
 		if err != nil {
 			h.Log.Error(fmt.Sprintf("Invalid max_price value: %v", err))
 			c.JSON(http.StatusBadRequest, model.Error{Message: "Invalid max_price value"})
@@ -86,12 +88,25 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 
 	maxDeliveryTime := c.Query("max_delivery_time")
 
+	// Cache kalitini yaratish
+	cacheKey := fmt.Sprintf("bids:tender_id:%s:max_price:%f:max_delivery_time:%s", tenderID, maxPriceValue, maxDeliveryTime)
+
+	// Cache’dan tekshirish
+	cachedBids, err := h.Storage.Caching().GetCache(cacheKey)
+	if err == nil && cachedBids != "" {
+		// Cache’da mavjud bo‘lsa, uni qaytaramiz
+		c.JSON(http.StatusOK, gin.H{"bids": cachedBids})
+		return
+	}
+
+	// Bazadan olish uchun parametrlar
 	input := model.GetBidsInput{
 		TenderID:        tenderID,
-		MaxPrice:        maxPriceErr,
+		MaxPrice:        maxPriceValue,
 		MaxDeliveryTime: maxDeliveryTime,
 	}
 
+	// Bazadan ma’lumot olish
 	bids, err := h.Service.GetBidsForTenderWithFilters(&input)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Failed to fetch bids for tender %s: %v", tenderID, err))
@@ -99,20 +114,36 @@ func (h *Handler) GetBidsOfTender(c *gin.Context) {
 		return
 	}
 
+	// Ma’lumotni JSON formatida stringga aylantirish
+	bidsBytes, err := json.Marshal(bids)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to process bids"})
+		return
+	}
+
+	// Cache’ga saqlash (10 daqiqa davomida)
+	cacheErr := h.Storage.Caching().SetCache(cacheKey, string(bidsBytes), 10*time.Minute)
+	if cacheErr != nil {
+		h.Log.Error(fmt.Sprintf("Failed to save to cache: %v", cacheErr))
+	}
+
+	// Javobni qaytarish
 	c.JSON(http.StatusOK, gin.H{"bids": bids})
 }
 
 // @Summary      Get tenders by filters
 // @Description  Retrieve a list of tenders filtered by status or other parameters
-// @Tags         Tenders
+// @Tags         Contractor
 // @Accept       json
 // @Produce      json
-// @Param        status query string false "Filter by status (e.g., open, closed)"
+// @Param        status query string false "Filter by status (e.g., open, closed, awarded)"
 // @Success      200 {array} model.Tender "List of tenders"
 // @Failure      400 {object} model.Error "Invalid request"
 // @Failure      500 {object} model.Error "Server error"
 // @Router       /tenders/all [get]
 func (h *Handler) GetTendersByFilters(c *gin.Context) {
+	// Kiruvchi ma'lumotlarni olish
 	var input model.GetTendersInput
 	if err := c.ShouldBindQuery(&input); err != nil {
 		h.Log.Error(fmt.Sprintf("Invalid query parameters: %v", err))
@@ -120,6 +151,19 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 		return
 	}
 
+	// Cache uchun unikal kalit yaratish
+	cacheKey := fmt.Sprintf("tenders:filters:%s",
+		input.Status)
+
+	// Cache’dan tekshirish
+	cachedTenders, err := h.Storage.Caching().GetCache(cacheKey)
+	if err == nil && cachedTenders != "" {
+		// Agar cache’da mavjud bo‘lsa, uni qaytaramiz
+		c.JSON(http.StatusOK, gin.H{"tenders": cachedTenders})
+		return
+	}
+
+	// Bazadan ma'lumot olish
 	tenders, err := h.Service.GetTendersByFilters(&input)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Failed to fetch tenders: %v", err))
@@ -127,5 +171,49 @@ func (h *Handler) GetTendersByFilters(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, tenders)
+	// JSON formatida stringga aylantirish
+	tendersBytes, err := json.Marshal(tenders)
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("Marshalling error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to process tenders"})
+		return
+	}
+
+	// Cache’ga saqlash (10 daqiqa davomida)
+	cacheErr := h.Storage.Caching().SetCache(cacheKey, string(tendersBytes), 10*time.Minute)
+	if cacheErr != nil {
+		h.Log.Error(fmt.Sprintf("Failed to save to cache: %v", cacheErr))
+	}
+
+	// Javobni qaytarish
+	c.JSON(http.StatusOK, gin.H{"tenders": tenders})
+}
+
+// @Summary      Get Bid History for a Contractor
+// @Description  Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline
+// @Tags         Contractor
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "User ID"
+// @Success      200 {array} model.BidHistory "List of bid history"
+// @Failure      400 {object} model.Error "Invalid input"
+// @Failure      500 {object} model.Error "Failed to retrieve bid history"
+// @Router       /users/{id}/bids [get]
+func (h *Handler) GetMyBidHistory(c *gin.Context) {
+	userID := c.Param("id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, model.Error{Message: "user_id is required"})
+		h.Log.Error("user_id is required")
+		return
+	}
+
+	// Pass the pointer to the GetMyBidsInput struct
+	bidHistory, err := h.Service.GetMyBidHistory(&model.GetMyBidsInput{UserID: userID})
+	if err != nil {
+		h.Log.Error(fmt.Sprintf("GetMyBidHistory request error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "Failed to retrieve bid history: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, bidHistory)
 }

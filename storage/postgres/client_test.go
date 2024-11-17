@@ -9,7 +9,7 @@ import (
 )
 
 func ConnectDB(logger *slog.Logger) *sql.DB {
-	connector := "host = localhost user = postgres port = 5432 dbname = tender_management password = 03212164 sslmode = disable"
+	connector := "host = localhost user = postgres port = 5432 dbname = tender password = hamidjon4424 sslmode = disable"
 	db, err := sql.Open("postgres", connector)
 	if err != nil {
 		logger.Error(err.Error())
@@ -25,7 +25,7 @@ func Test_CreateTender(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.CreateTender(&model.CreateTenderReq{
-		ClientId:    "f76b4c4b-da00-4957-bb88-b197e0ce739a",
+		ClientId:    "99f13ede-f029-4ba6-bc90-c28269f82fdc",
 		Title:       "Uy qurilishi",
 		Description: "9 qavatli uy qurish kerak",
 		Diadline:    "10-11-2025",
@@ -93,12 +93,12 @@ func Test_GetTenderBids(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.GetTenderBids(&model.GetTenderBidsReq{
-		ClientId:   "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
-		TenderId:   "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
+		ClientId:   "99f13ede-f029-4ba6-bc90-c28269f82fdc",
+		TenderId:   "2de1f098-a446-4f47-aa14-d2c8a4f985bc",
 		StartPrice: 10_000_000.0,
 		EndPrice:   100_000_000.0,
-		StartDate:  "01-01-2025",
-		EndDate:    "01-01-2026",
+		StartDate:  "2025-01-01",
+		EndDate:    "2025-01-01",
 		Limit:      10,
 		Page:       1,
 	})
@@ -114,10 +114,10 @@ func Test_SubmitBit(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.SubmitBit(&model.SubmitBitReq{
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
-		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
-		BidId:    "",
-		Status:   "Awarded",
+		ClientId: "99f13ede-f029-4ba6-bc90-c28269f82fdc",
+		TenderId: "2de1f098-a446-4f47-aa14-d2c8a4f985bc",
+		BidId:    "28ade5f8-f080-4772-8129-0f84daa96a80",
+		Status:   "award",
 	})
 
 	if err != nil {
@@ -131,12 +131,23 @@ func Test_AwardTender(t *testing.T) {
 	c := NewClientRepo(db, Logger)
 
 	_, err := c.AwardTender(&model.AwardTenderReq{
-		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
-		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
-		Bidid:    "",
+		ClientId: "99f13ede-f029-4ba6-bc90-c28269f82fdc",
+		TenderId: "2de1f098-a446-4f47-aa14-d2c8a4f985bc",
+		BidId:    "28ade5f8-f080-4772-8129-0f84daa96a80",
 	})
 
 	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func Test_GetUserByTebderId(t *testing.T){
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
+
+	_, err := c.GetUserByTebderId("2de1f098-a446-4f47-aa14-d2c8a4f985bc")
+	if err != nil{
+		Logger.Error(err.Error())
 		t.Fatal(err)
 	}
 }

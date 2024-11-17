@@ -159,12 +159,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Noto'g'ri parametrlar",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki GetAllTenders funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -208,12 +202,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki CreateTender funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -259,12 +247,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -317,12 +299,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki BidAwarded funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -375,12 +351,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki UpdateTender funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -421,7 +391,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/model.DeleteTenderResp"
                         }
                     },
-                    "500": {
+                    "400": {
                         "description": "Server xatosi yoki DeleteTender funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -472,19 +442,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Yaroqsiz ma'lumot yoki noto'g'ri so'rov",
+                        "description": "Server xatosi yoki AwardTender funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
                     },
                     "404": {
                         "description": "Tender yoki taklif topilmadi",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Server xatosi yoki AwardTender funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -542,12 +506,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad request error",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -598,12 +556,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "error",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki CreateBid funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -658,7 +610,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 500.75)",
+                        "description": "Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 400.75)",
                         "name": "end_price",
                         "in": "query"
                     },
@@ -683,12 +635,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Server xatosi yoki GetTenderBids funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -735,12 +681,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Failed to retrieve bid history",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -784,12 +724,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Client ID kiritilmagan",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "500": {
                         "description": "Ichki xatolik yoki ma'lumot olinmadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
@@ -1090,13 +1024,13 @@ const docTemplate = `{
         "model.UserRegisterResp": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
-                "message": {
+                "role": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

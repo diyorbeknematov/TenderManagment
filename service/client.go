@@ -3,17 +3,12 @@ package service
 import (
 	"fmt"
 	"tender/model"
-	"time"
 )
 
 func (S *Service) CreateTender(req *model.CreateTenderReq) (*model.CreateTenderResp, error) {
 	if req.Budget < 0 {
 		S.Log.Error("Budget 0 dan kichik bo'lishi mumkin emas")
 		return nil, fmt.Errorf("budget 0 dan kichik bo'lishi mumkin emas")
-	}
-	if len(req.Diadline) != 0 && time.Now().String() > req.Diadline {
-		S.Log.Error("Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
-		return nil, fmt.Errorf("diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
 	}
 
 	resp, err := S.Storage.Client().CreateTender(req)
@@ -40,10 +35,6 @@ func (S *Service) UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTenderR
 		S.Log.Error("Budget 0 dan kichik bo'lishi mumkin emas")
 		return nil, fmt.Errorf("budget 0 dan kichik bo'lishi mumkin emas")
 	}
-	if time.Now().String() > req.Diadline {
-		S.Log.Error("Diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
-		return nil, fmt.Errorf("diadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
-	}
 
 	resp, err := S.Storage.Client().UpdateTender(req)
 	if err != nil {
@@ -65,10 +56,6 @@ func (S *Service) DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderR
 }
 
 func (S *Service) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) {
-	if req.StartPrice < 0 || req.EndPrice < 0 {
-		S.Log.Error("Deadline hozirgi vaqtdan ortda bo'lishi mumkin emas")
-		return nil, fmt.Errorf("budget 0 dan kichik bo'lishi mumkin emas")
-	}
 	clientId, err := S.Storage.Client().GetUserByTebderId(req.TenderId)
 	if err != nil {
 		S.Log.Error(fmt.Sprintf("Bunday tender mavjud emas: %v", err))

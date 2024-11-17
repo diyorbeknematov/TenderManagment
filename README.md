@@ -31,46 +31,25 @@ GET/users/:id/tenders - userlar o'z tenderlarini tarixini ko'radi
 
 Contractor uchun API
 
-POST/tenders/
+POST/tenders/:id/bids - Contractor tender uchun bid yaratadi
+GET/tenders/all - Contractor barcha tenderlarni ko'ra oladi
+GET/tender/:id/bids - Contractor tenderning barcha bidlarini ko'ra oladi
+GET/users/:id/bids - userlar o'z bidlari tarixini ko'radi
 
 
-Foydalanuvchilarni ro'yxatdan o'tkazish va tizimga kirish.
-Mijozlar tender e'lon qilishlari, pudratchilar esa tenderlarga taklif yuborishlari mumkin.
-JWT yordamida autentifikatsiya va ro'lga asoslangan ruxsatlar.
-Tender yaratish (Mijozlar uchun)
-
-Mijozlar yangi tender yaratishlari mumkin.
-Tenderlar turli holatlarda (ochiq, yopiq, taqdim etilgan) bo'lishi mumkin.
-Mijozlar barcha tenderlarini ko'rish va ularning holatini boshqarishlari mumkin.
-Taklif yuborish (Pudratchilar uchun)
-
-Pudratchilar ochiq tenderlarga taklif yuborishlari mumkin.
-Takliflar narx, yetkazib berish vaqti va izohlarni o'z ichiga olishi mumkin.
-Takliflarni filtrlash va saralash
-
-Mijozlar takliflarni narx va yetkazib berish vaqti bo'yicha saralashlari mumkin.
-Tenderni baholash va g'olibni e'lon qilish
-
-Mijozlar tender muddati tugaganidan so'ng barcha takliflarni baholashlari va g'olibni tanlashlari mumkin.
-G'olib pudratchiga xabar yuboriladi va tender holati "yopiq" yoki "berilgan" ga o'tkaziladi.
-Tender va Takliflar Tarixi
-
-Mijozlar va pudratchilar o'zlarining yaratgan tenderlarini va yuborgan takliflarini ko'rishlari mumkin.
-📈 Bonus Xususiyatlar (Ixtiyoriy)
+📈 Bonus Xususiyatlar
 Real-time yangilanishlar
 
-WebSocket yordamida foydalanuvchilarga real-time yangilanishlar yuboriladi.
-Rate Limiting
+WebSocket yordamida foydalanuvchilarga real-time notificationlar yuboriladi
+Rate Limiting qo'shildi. Contractor daqiqasiga bitta tender uchun 5 tadana ortiq bid yarata olmaydi
+Keshlash. Barcha get funksiyalari uchun caching qo'shildi. Cachingdan tekshirib ko'ramiz agar requestga mos response bo'lsa shu responsni qaytaramiz. Agar bo'lamasa databazadan olib qaytaramiz va redisga yozib ketamiz.
 
-Taklif yuborish endpointiga rate-limiting qo'yiladi, bunda har bir pudratchiga minutiga 5 ta taklif yuborish mumkin.
-Keshlash
-
-Keshlash yordamida tenderlar va takliflarni tezroq olish imkoniyati yaratiladi.
 🗂️ Ma'lumotlar bazasi sxemasi
 User (id, username, password, role, email)
 Tender (id, client_id, title, description, deadline, budget, status)
 Bid (id, tender_id, contractor_id, price, delivery_time, comments, status)
 Notification (id, user_id, message, relation_id, type, created_at)
+
 🛠️ Loyihani ishga tushirish
 Loyihani ishga tushirish uchun quyidagi qadamlarni bajarishingiz kerak:
 
@@ -84,16 +63,3 @@ Loyihani va boshqa zarur xizmatlarni ishga tushirish uchun quyidagi komandani ba
 make run
 Bu komanda, Golang ilovasini konteynerda ishga tushiradi va barcha kerakli xizmatlarni ishga tushuradi.
 
-
-📄 API hujjatlari
-Loyihada barcha API'lar uchun hujjatlar Swagger yordamida taqdim etiladi. Swagger UI orqali barcha API metodlari va ularga tegishli parametrlarni ko'rishingiz mumkin.
-
-Swagger hujjatiga kirish uchun Swagger UI ga tashrif buyurishingiz mumkin.
-
-Git repozitoriyasini klonlash:
-git clone https://github.com/golanguzb70/golang-compition-2024.git
-cd golang-compition-2024
-Zarur bo'lgan barcha kutubxonalarni o'rnatish:
-go mod tidy
-Loyihani ishga tushirish:
-make run

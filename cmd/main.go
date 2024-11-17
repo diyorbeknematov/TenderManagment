@@ -31,7 +31,7 @@ func main() {
 
 	service := service.NewService(storage, logger)
 
-	router := api.Router(service, logger)
+	router := api.Router(service, logger, storage)
 
 	go check.StartTenderStatusUpdater(storage, time.Hour)
 

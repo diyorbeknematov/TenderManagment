@@ -702,7 +702,7 @@ paths:
           schema:
             $ref: '#/definitions/model.Error'
       security:
-      - ApiKeyAuth: []
+      - Bearer: []
       summary: Foydalanuvchi tender tarixini olish
       tags:
       - Client

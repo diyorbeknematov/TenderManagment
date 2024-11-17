@@ -57,7 +57,7 @@ func Router(deps *Dependencies) *gin.Engine {
 		tender.GET("/all", h.GetTendersByFilters)
 	}
 
-	router.GET("/ws/notifications", middleware.AuthMiddleware(logger), h.WebSocketNotifications)
+	router.GET("/ws/notifications", middleware.AuthMiddleware(deps.Logger), h.WebSocketNotifications)
 
 	user := router.Group("/users")
 	{

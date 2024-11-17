@@ -12,6 +12,44 @@
     },
     "basePath": "/",
     "paths": {
+        "/bids/history/{user_id}": {
+            "get": {
+                "description": "Retrieve all bids placed by a contractor for various tenders, including tender details like title and deadline",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contractor"
+                ],
+                "summary": "Get Bid History for a Contractor",
+                "responses": {
+                    "200": {
+                        "description": "List of bid history",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.BidHistory"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve bid history",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/tenders": {
             "get": {
                 "description": "Tenderlar ro'yxatini olish uchun API endpoint",
@@ -98,6 +136,52 @@
                     },
                     "500": {
                         "description": "Server xatosi yoki CreateTender funksiyasi ishlamadi",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/all": {
+            "get": {
+                "description": "Retrieve a list of tenders filtered by status or other parameters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tenders"
+                ],
+                "summary": "Get tenders by filters",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by status (e.g., open, closed, awarded)",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tenders",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Tender"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -253,7 +337,7 @@
         },
         "/tenders/{id}/bids": {
             "get": {
-                "description": "Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun API endpoint",
+                "description": "Contractor can get all bids of a tender with optional filters",
                 "consumes": [
                     "application/json"
                 ],
@@ -261,69 +345,48 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Client"
+                    "Contractor"
                 ],
-                "summary": "Tenderga bildirilgan takliflarni olish",
+                "summary": "Get bids of tender",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Tender ID'si",
+                        "description": "Tender ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Bir sahifadagi takliflar soni (standart: 10)",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Sahifa raqami (standart: 1)",
-                        "name": "page",
+                        "type": "number",
+                        "description": "Maximum price filter",
+                        "name": "max_price",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Takliflarning boshlang'ich narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 100.50)",
-                        "name": "start_price",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float qiymat ko'rinishida yozilishi kerak, masalan: 500.75)",
-                        "name": "end_price",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Boshlanish sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)",
-                        "name": "start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Tugash sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)",
-                        "name": "end_date",
+                        "description": "Maximum delivery time filter (ISO8601 format)",
+                        "name": "max_delivery_time",
                         "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Takliflar muvaffaqiyatli qaytarildi",
+                        "description": "List of bids",
                         "schema": {
-                            "$ref": "#/definitions/model.GetTenderBidsResp"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Bid"
+                            }
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
+                        "description": "Bad request error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
                     },
                     "500": {
-                        "description": "Server xatosi yoki GetTenderBids funksiyasi ishlamadi",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -331,7 +394,7 @@
                 }
             },
             "post": {
-                "description": "Tender uchun tanlangan taklifni \"awarded\" sifatida belgilash",
+                "description": "Contractor can create bid to teender",
                 "consumes": [
                     "application/json"
                 ],
@@ -339,42 +402,42 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Client"
+                    "Contractor"
                 ],
-                "summary": "Tanlangan taklifni belgilash",
+                "summary": "Create bid",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Tender ID'si",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Taklif haqida ma'lumot",
+                        "description": "bid infos (DeliveryTime format: dd-mm-yyyy)",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.SubmitBitReq"
+                            "$ref": "#/definitions/model.CreateBid"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tender id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Taklif muvaffaqiyatli belgilandi",
+                        "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/model.SubmitBitResp"
+                            "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Ma'lumotlarni olishda xatolik",
+                        "description": "error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
                     },
                     "500": {
-                        "description": "Server xatosi yoki BidAwarded funksiyasi ishlamadi",
+                        "description": "Server xatosi yoki CreateBid funksiyasi ishlamadi",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -418,6 +481,55 @@
                 },
                 "tender_id": {
                     "type": "string"
+                }
+            }
+        },
+        "model.BidHistory": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "contractor_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tender_deadline": {
+                    "type": "string"
+                },
+                "tender_id": {
+                    "type": "string"
+                },
+                "tender_title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateBid": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 }
             }
         },

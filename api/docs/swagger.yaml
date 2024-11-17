@@ -24,6 +24,38 @@ definitions:
       tender_id:
         type: string
     type: object
+  model.BidHistory:
+    properties:
+      comments:
+        type: string
+      contractor_id:
+        type: string
+      created_at:
+        type: string
+      delivery_time:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      status:
+        type: string
+      tender_deadline:
+        type: string
+      tender_id:
+        type: string
+      tender_title:
+        type: string
+    type: object
+  model.CreateBid:
+    properties:
+      comments:
+        type: string
+      delivery_time:
+        type: string
+      price:
+        type: number
+    type: object
   model.CreateTenderReq:
     properties:
       budget:
@@ -137,6 +169,32 @@ info:
   title: TENDER MANAGMENT API
   version: "0.1"
 paths:
+  /bids/history/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all bids placed by a contractor for various tenders, including
+        tender details like title and deadline
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of bid history
+          schema:
+            items:
+              $ref: '#/definitions/model.BidHistory'
+            type: array
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Failed to retrieve bid history
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Get Bid History for a Contractor
+      tags:
+      - Contractor
   /tenders:
     get:
       consumes:
@@ -299,92 +357,105 @@ paths:
     get:
       consumes:
       - application/json
-      description: Ma'lum bir tender uchun bildirilgan barcha takliflarni olish uchun
-        API endpoint
+      description: Contractor can get all bids of a tender with optional filters
       parameters:
-      - description: Tender ID'si
+      - description: Tender ID
         in: path
         name: id
         required: true
         type: string
-      - description: 'Bir sahifadagi takliflar soni (standart: 10)'
+      - description: Maximum price filter
         in: query
-        name: limit
-        type: integer
-      - description: 'Sahifa raqami (standart: 1)'
+        name: max_price
+        type: number
+      - description: Maximum delivery time filter (ISO8601 format)
         in: query
-        name: page
-        type: integer
-      - description: 'Takliflarning boshlang''ich narxi (filtrlash uchun ixtiyoriy,
-          float qiymat ko''rinishida yozilishi kerak, masalan: 100.50)'
-        in: query
-        name: start_price
-        type: string
-      - description: 'Takliflarning yakuniy narxi (filtrlash uchun ixtiyoriy, float
-          qiymat ko''rinishida yozilishi kerak, masalan: 500.75)'
-        in: query
-        name: end_price
-        type: string
-      - description: 'Boshlanish sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)'
-        in: query
-        name: start_date
-        type: string
-      - description: 'Tugash sanasi (filtrlash uchun ixtiyoriy, format: YYYY-MM-DD)'
-        in: query
-        name: end_date
+        name: max_delivery_time
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Takliflar muvaffaqiyatli qaytarildi
+          description: List of bids
           schema:
-            $ref: '#/definitions/model.GetTenderBidsResp'
+            items:
+              $ref: '#/definitions/model.Bid'
+            type: array
         "400":
-          description: Ma'lumotlarni olishda xatolik
+          description: Bad request error
           schema:
             $ref: '#/definitions/model.Error'
         "500":
-          description: Server xatosi yoki GetTenderBids funksiyasi ishlamadi
+          description: Internal server error
           schema:
             $ref: '#/definitions/model.Error'
-      summary: Tenderga bildirilgan takliflarni olish
+      summary: Get bids of tender
       tags:
-      - Client
+      - Contractor
     post:
       consumes:
       - application/json
-      description: Tender uchun tanlangan taklifni "awarded" sifatida belgilash
+      description: Contractor can create bid to teender
       parameters:
-      - description: Tender ID'si
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Taklif haqida ma'lumot
+      - description: 'bid infos (DeliveryTime format: dd-mm-yyyy)'
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.SubmitBitReq'
+          $ref: '#/definitions/model.CreateBid'
+      - description: Tender id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Taklif muvaffaqiyatli belgilandi
+          description: success
           schema:
-            $ref: '#/definitions/model.SubmitBitResp'
+            type: string
         "400":
-          description: Ma'lumotlarni olishda xatolik
+          description: error
           schema:
             $ref: '#/definitions/model.Error'
         "500":
-          description: Server xatosi yoki BidAwarded funksiyasi ishlamadi
+          description: Server xatosi yoki CreateBid funksiyasi ishlamadi
           schema:
             $ref: '#/definitions/model.Error'
-      summary: Tanlangan taklifni belgilash
+      summary: Create bid
       tags:
-      - Client
+      - Contractor
+  /tenders/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of tenders filtered by status or other parameters
+      parameters:
+      - description: Filter by status (e.g., open, closed, awarded)
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tenders
+          schema:
+            items:
+              $ref: '#/definitions/model.Tender'
+            type: array
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Get tenders by filters
+      tags:
+      - Tenders
 schemes:
 - http
 - https

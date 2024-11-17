@@ -3,3 +3,15 @@
 {"time":"2024-11-17T11:26:12.117224895+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
 {"time":"2024-11-17T11:26:29.502949396+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
 {"time":"2024-11-17T11:26:41.478139565+05:00","level":"ERROR","msg":"dial tcp: lookup postgres on 127.0.0.53:53: server misbehaving"}
+{"time":"2024-11-17T12:47:28.792707088+05:00","level":"ERROR","msg":"User oldin ro'yxatdan o'tgan"}
+{"time":"2024-11-17T12:48:01.097545522+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:48:01.097584464+05:00","level":"ERROR","msg":"Register crudda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:48:01.097591988+05:00","level":"ERROR","msg":"Userni bor yoki yo'qligini tekshirishda xatolik: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:48:34.719980127+05:00","level":"ERROR","msg":"User oldin ro'yxatdan o'tgan"}
+{"time":"2024-11-17T12:48:55.539783531+05:00","level":"ERROR","msg":"Register qilishda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:48:55.540266143+05:00","level":"ERROR","msg":"Register crudda xatolik bor: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:48:55.54027124+05:00","level":"ERROR","msg":"Userni bor yoki yo'qligini tekshirishda xatolik: pq: duplicate key value violates unique constraint \"users_username_key\""}
+{"time":"2024-11-17T12:50:47.010788656+05:00","level":"ERROR","msg":"User oldin ro'yxatdan o'tgan"}
+{"time":"2024-11-17T12:52:52.510134498+05:00","level":"ERROR","msg":"Userni email bo'yicha olishda xatolik: sql: no rows in result set"}
+{"time":"2024-11-17T12:52:52.510270241+05:00","level":"ERROR","msg":"Userni email orqali olish crudida xatolik bor: sql: no rows in result set"}
+{"time":"2024-11-17T12:52:52.510278234+05:00","level":"ERROR","msg":"Userni username va password boyicha login qilishda xatolik: sql: no rows in result set"}

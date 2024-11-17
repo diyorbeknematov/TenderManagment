@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  model.APIError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
   model.AwardTenderResp:
     properties:
       status:
@@ -106,6 +113,20 @@ definitions:
       count:
         type: integer
     type: object
+  model.LoginResp:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  model.LoginUser:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   model.SubmitBitReq:
     properties:
       bid_id:
@@ -163,12 +184,100 @@ definitions:
       message:
         type: string
     type: object
+  model.UserRegisterReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserRegisterResp:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a sample API.
   title: TENDER MANAGMENT API
   version: "0.1"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: User info
+        in: body
+        name: Info
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIError'
+      summary: Login
+      tags:
+      - Register And Login
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Registration
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserRegisterResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIError'
+      summary: Registarion
+      tags:
+      - Register And Login
   /tenders:
     get:
       consumes:

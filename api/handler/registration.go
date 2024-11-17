@@ -40,7 +40,7 @@ func (h *Handler) RegistrationHandler(ctx *gin.Context) {
 		return
 	}
 
-	if !exists {
+	if exists {
 		h.Log.Error("User oldin ro'yxatdan o'tgan")
 		ctx.JSON(model.ErrEmailAlreadyExists.Code, model.ErrEmailAlreadyExists)
 		return

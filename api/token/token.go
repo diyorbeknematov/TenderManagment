@@ -16,47 +16,24 @@ type TokenClaims struct {
 	jwt.StandardClaims
 }
 
-func GenerateAccessToken(tokenReq model.Token) (string, error) {
+func GenerateToken(tokenReq model.Token) (string, error) {
 	claims := TokenClaims{
 		ID:       tokenReq.ID,
 		Username: tokenReq.Username,
 		Role:     tokenReq.Role,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(), // Access token muddati qisqaroq
+			ExpiresAt: time.Now().Add(time.Hour * 3).Unix(), // Access token muddati qisqaroq
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.LoadConfig().ACCESS_SECRET_KEY))
+	return token.SignedString([]byte(config.LoadConfig().SECRET_KEY))
 }
 
-func GenerateRefreshToken(tokenReq model.Token) (string, error) {
-	claims := TokenClaims{
-		ID:       tokenReq.ID,
-		Username: tokenReq.Username,
-		Role:     tokenReq.Role,
-		StandardClaims: jwt.StandardClaims{
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Hour * 24 * 7).Unix(), // Refresh token muddati uzoqroq
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.LoadConfig().REFRESH_SECRET_KEY))
-}
-
-func ExtractAccessClaims(tokenStr string) (*TokenClaims, error) {
-	return extractClaims(tokenStr, config.LoadConfig().ACCESS_SECRET_KEY)
-}
-
-func ExtractRefreshClaims(tokenStr string) (*TokenClaims, error) {
-	return extractClaims(tokenStr, config.LoadConfig().REFRESH_SECRET_KEY)
-}
-
-func extractClaims(tokenStr string, secret string) (*TokenClaims, error) {
+func ExtractClaims(tokenStr string) (*TokenClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &TokenClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
+		return []byte(config.LoadConfig().SECRET_KEY), nil
 	})
 
 	if err != nil || !token.Valid {

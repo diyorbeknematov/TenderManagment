@@ -9,14 +9,13 @@ import (
 )
 
 type Config struct {
-	DB_HOST            string
-	DB_PORT            string
-	DB_USER            string
-	DB_NAME            string
-	DB_PASSWORD        string
-	API_PORT           string
-	ACCESS_SECRET_KEY  string
-	REFRESH_SECRET_KEY string
+	DB_HOST     string
+	DB_PORT     string
+	DB_USER     string
+	DB_NAME     string
+	DB_PASSWORD string
+	API_PORT    string
+	SECRET_KEY  string
 }
 
 func LoadConfig() Config {
@@ -32,8 +31,7 @@ func LoadConfig() Config {
 	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "education_center"))
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "secret"))
 	config.API_PORT = cast.ToString(coalesce("API_PORT", ":8080"))
-	config.ACCESS_SECRET_KEY = cast.ToString(coalesce("ACCESS_SECRET_KEY", "secret"))
-	config.REFRESH_SECRET_KEY = cast.ToString(coalesce("REFRESH_SECRET_KEY", "secret"))
+	config.SECRET_KEY = cast.ToString(coalesce("ACCESS_SECRET_KEY", "secret"))
 	return config
 }
 

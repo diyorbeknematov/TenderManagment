@@ -12,7 +12,7 @@ var (
 	ErrForbidden           = NewAPIError("Forbidden access", http.StatusForbidden)
 	ErrNotFound            = NewAPIError("Resource not found", http.StatusNotFound)
 	ErrInternalServerError = NewAPIError("Something went wrong, please try again later", http.StatusInternalServerError)
-	ErrEmailAlreadyExists  = NewAPIError("Email already exists", http.StatusConflict)
+	ErrEmailAlreadyExists  = NewAPIError("Email already exists", http.StatusBadRequest)
 	ErrNoContent           = NewAPIError("No information found", http.StatusNoContent)
 
 	ErrNoUpdates = errors.New("no updates found")

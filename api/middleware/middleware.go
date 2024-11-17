@@ -22,7 +22,7 @@ func AuthMiddleware(logger *slog.Logger) gin.HandlerFunc {
 		}
 
 		// JWT tokenni tekshirish va tasdiqlash
-		claims, err := token.ExtractAccessClaims(tokenString)
+		claims, err := token.ExtractClaims(tokenString)
 		if err != nil {
 			logger.Error(fmt.Sprintf("Failed to extract: %v", err))
 			ctx.JSON(model.ErrUnauthorized.Code, model.ErrUnauthorized)

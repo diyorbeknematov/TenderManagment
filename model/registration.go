@@ -39,6 +39,5 @@ type LoginUser struct {
 }
 
 type LoginResp struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	Token string `json:"token"`
 }

@@ -27,8 +27,18 @@ type UserRegisterResp struct {
 }
 
 type GetUser struct {
+	ID       string `db:"id"`
 	Username string `db:"username"`
-	Email    string `db:"email"`
 	Role     string `db:"role"`
 	Password string `db:"password"`
+}
+
+type LoginUser struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResp struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }

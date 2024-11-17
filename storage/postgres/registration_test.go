@@ -39,7 +39,7 @@ func TestGetUserByEmail(t *testing.T) {
 
 	UserRepo := storage.NewStorage(db, logs.InitLogger())
 
-	resp, err := UserRepo.RegistrationRepository().GetUserByEmail("diyorbeknematov@gmail.com")
+	resp, err := UserRepo.RegistrationRepository().GetUserByUsername("diyorbeknematov@gmail.com")
 	if err != nil {
 		t.Fatal(err)
 	}

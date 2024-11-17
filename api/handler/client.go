@@ -18,7 +18,7 @@ import (
 // @Success      200 {object} model.CreateTenderResp "Tender muvaffaqiyatli yaratildi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
 // @Failure      500 {object} model.Error "Server xatosi yoki CreateTender funksiyasi ishlamadi"
-// @Router       /tender/create [post]
+// @Router       /tenders [post]
 func (h *Handler) CreateTender(c *gin.Context) {
 	req := model.CreateTenderReq{}
 	err := c.ShouldBindJSON(&req)
@@ -47,7 +47,7 @@ func (h *Handler) CreateTender(c *gin.Context) {
 // @Success      200 {object} model.UpdateTenderResp "Tender ma'lumotlari muvaffaqiyatli yangilandi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
 // @Failure      500 {object} model.Error "Server xatosi yoki UpdateTender funksiyasi ishlamadi"
-// @Router       /tender/update [put]
+// @Router       /tenders/{id} [put]
 func (h *Handler) UpdateTender(c *gin.Context) {
 	req := model.UpdateTenderReq{}
 	err := c.ShouldBindJSON(&req)
@@ -75,7 +75,7 @@ func (h *Handler) UpdateTender(c *gin.Context) {
 // @Param        id path string true "Tenderning ID'si"
 // @Success      200 {object} model.DeleteTenderResp "Tender muvaffaqiyatli o'chirildi"
 // @Failure      500 {object} model.Error "Server xatosi yoki DeleteTender funksiyasi ishlamadi"
-// @Router       /tender/delete/{id} [delete]
+// @Router       /tenders/{id} [delete]
 func (h *Handler) DeleteTender(c *gin.Context) {
 	resp, err := h.Service.DeleteTender(&model.DeleteTenderReq{Id: c.Param("id")})
 	if err != nil {
@@ -97,7 +97,7 @@ func (h *Handler) DeleteTender(c *gin.Context) {
 // @Param        page query int false "Sahifa raqami (standart: 1)"
 // @Success      200 {object} model.GetAllTendersResp "Tenderlar muvaffaqiyatli qaytarildi"
 // @Failure      500 {object} model.Error "Server xatosi yoki GetAllTenders funksiyasi ishlamadi"
-// @Router       /tender/get_all [get]
+// @Router       /tenders [get]
 func (h *Handler) GetAllTenders(c *gin.Context) {
 	req := model.GetAllTendersReq{}
 	req.ClientId = c.Query("client_id")
@@ -135,7 +135,7 @@ func (h *Handler) GetAllTenders(c *gin.Context) {
 // @Success      200 {object} model.GetTenderBidsResp "Takliflar muvaffaqiyatli qaytarildi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
 // @Failure      500 {object} model.Error "Server xatosi yoki GetTenderBids funksiyasi ishlamadi"
-// @Router       /tender/{id}/bids [get]
+// @Router       /tenders/{id}/bids [get]
 func (h *Handler) GetTenderBids(c *gin.Context) {
 	req := model.GetTenderBidsReq{}
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -172,13 +172,13 @@ func (h *Handler) GetTenderBids(c *gin.Context) {
 // @Tags         Client
 // @Accept       json
 // @Produce      json
-// @Param        body body model.BidAwardedReq true "Taklif haqida ma'lumot"
-// @Success      200 {object} model.BidAwardedResp "Taklif muvaffaqiyatli belgilandi"
+// @Param        body body model.SubmitBitReq true "Taklif haqida ma'lumot"
+// @Success      200 {object} model.SubmitBitResp "Taklif muvaffaqiyatli belgilandi"
 // @Failure      400 {object} model.Error "Ma'lumotlarni olishda xatolik"
 // @Failure      500 {object} model.Error "Server xatosi yoki BidAwarded funksiyasi ishlamadi"
-// @Router       /tender/bid_awarded [post]
-func (h *Handler) BidAwarded(c *gin.Context) {
-	req := model.BidAwardedReq{}
+// @Router       /tenders/{id}/bids [post]
+func (h *Handler) SubmitBit(c *gin.Context) {
+	req := model.SubmitBitReq{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		h.Log.Error(fmt.Sprintf("Ma'lumotlarni olishda xatolik: %v", err))
@@ -186,12 +186,46 @@ func (h *Handler) BidAwarded(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.Service.BidAwarded(&req)
+	resp, err := h.Service.SubmitBit(&req)
 	if err != nil {
-		h.Log.Error(fmt.Sprintf("GetTenderBids request error: %v", err))
-		c.JSON(http.StatusInternalServerError, model.Error{Message: "GetTenderBids funksiyasi ishlamadi: " + err.Error()})
+		h.Log.Error(fmt.Sprintf("SubmitBit request error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "SubmitBit funksiyasi ishlamadi: " + err.Error()})
 		return
 	}
 
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Summary      Tanlangan taklifni belgilash
+// @Description  Tender uchun tanlangan taklifni "awarded" sifatida belgilash
+// @Tags         Client
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string                 true  "Tender ID"
+// @Param        body body      model.AwardTenderReq   true  "Taklif haqida ma'lumot"
+// @Success      200  {object}  model.AwardTenderResp  "Taklif muvaffaqiyatli belgilandi"
+// @Failure      400  {object}  model.Error            "Ma'lumotlarni olishda xatolik"
+// @Failure      500  {object}  model.Error            "Server xatosi yoki AwardTender funksiyasi ishlamadi"
+// @Router       /tenders/{id}/award/{bid_id} [post]
+func (h *Handler) AwardTender(c *gin.Context) {
+	req := model.AwardTenderReq{
+		TenderId: c.Param("id"),
+		Bidid: c.Param("bid_id"),
+	}
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil{
+		h.Log.Error(fmt.Sprintf("Ma'lumotlarni olishda xatolik: %v", err))
+		c.JSON(http.StatusBadRequest, model.Error{Message: "Ma'lumotlarni olishda xatolik: " + err.Error()})
+		return
+	}
+
+	resp, err := h.Service.AwardTender(&req)
+	if err != nil{
+		h.Log.Error(fmt.Sprintf("AwardTender request error: %v", err))
+		c.JSON(http.StatusInternalServerError, model.Error{Message: "AwardTender funksiyasi ishlamadi: " + err.Error()})
+		return
+	}
+	
 	c.JSON(http.StatusOK, resp)
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"tender/api"
-	"tender/api/handler"
 	"tender/config"
 	"tender/logs"
 	"tender/service"
@@ -23,9 +22,11 @@ func main() {
 	defer db.Close()
 
 	storage := storage.NewStorage(db, logger)
+
 	service := service.NewService(storage, logger)
-	hand := handler.NewHandler(*service, logger)
-	router := api.Router(hand)
+
+	router := api.Router(service, logger)
+	
 	log.Printf("server is running...")
 	log.Fatal(router.Run(cfg.API_PORT))
 }

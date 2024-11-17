@@ -10,8 +10,8 @@ type Service struct {
 	Log     *slog.Logger
 }
 
-func NewService(storage storage.Storage, logger *slog.Logger) *Service {
-	return &Service{
+func NewService(storage storage.Storage, logger *slog.Logger) Service {
+	return Service{
 		Storage: storage,
 		Log:     logger,
 	}

@@ -16,7 +16,9 @@ type ClientRepo interface {
 	UpdateTender(req *model.UpdateTenderReq) (*model.UpdateTenderResp, error)
 	DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderResp, error)
 	GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) 
-	BidAwarded(req *model.BidAwardedReq)(*model.BidAwardedResp, error)
+	SubmitBit(req *model.SubmitBitReq)(*model.SubmitBitResp, error)
+	AwardTender(req *model.AwardTenderReq)(*model.AwardTenderResp, error)
+	GetUserByTebderId(tenderId string)(string, error)
 }
 
 type clientImpl struct {
@@ -210,7 +212,7 @@ func (C *clientImpl) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTende
 	}, nil
 }
 
-func (C *clientImpl) BidAwarded(req *model.BidAwardedReq)(*model.BidAwardedResp, error){
+func (C *clientImpl) SubmitBit(req *model.SubmitBitReq)(*model.SubmitBitResp, error){
 	query := `
 				UPDATE bids SET
 					status = $1 
@@ -222,7 +224,74 @@ func (C *clientImpl) BidAwarded(req *model.BidAwardedReq)(*model.BidAwardedResp,
 		return nil, err
 	}
 
-	return &model.BidAwardedResp{
+	return &model.SubmitBitResp{
 		Status: true,
 	}, nil
+}
+
+func (C *clientImpl) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderResp, error){
+	tr, err := C.DB.Begin()
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Tranzaksiya yaratishda xatolik: %v", err))
+		return nil, err
+	}
+	defer tr.Commit()
+
+	query := `
+				UPDATE bids SET 
+					status = $1
+				WHERE
+					tender_id = $2 AND id = $3 AND deleted_at IS NULL`
+	_, err = tr.Exec(query, "award", req.TenderId, req.Bidid)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Contractorga award berishda xatolik: %v", err))
+		tr.Rollback()
+		return nil, err
+	}
+
+	query = `
+				UPDATE bids SET
+					status = $1
+				WHERE
+					tender_id = $2 AND id != $3 AND deleted_at IS NULL`
+	_, err = tr.Exec(query, "fail", req.TenderId, req.Bidid)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Contractorlargaga fail berishda xatolik: %v", err))
+		tr.Rollback()
+		return nil, err
+	}
+
+	query = `
+				UPDATE tenders SET 
+					status = $1
+				WHERE 
+					client_id = $1 AND id = $2 AND deleted_at IS NULL`
+	_, err = tr.Exec(query, "awarded", req.ClientId, req.TenderId)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("Tender statusini o'zgartirishda xatolik: %v", err))
+		tr.Rollback()
+		return nil, err
+	}
+
+	return &model.AwardTenderResp{
+		Status: true,
+	}, nil
+}
+
+func (C *clientImpl) GetUserByTebderId(tenderId string)(string, error){
+	var userId string
+	query := `
+				SELECT 
+					client_id
+				FROM 
+					tenders
+				WHERE
+					id = $1 AND deleted_at IS NULL`
+	err := C.DB.QueryRow(query, tenderId).Scan(&userId)
+	if err != nil{
+		C.Log.Error(fmt.Sprintf("TenderId bo'yicha ClientIdisini olishda xatolik: %v", err))
+		return "", err
+	}
+
+	return userId, nil
 }

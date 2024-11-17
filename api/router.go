@@ -1,7 +1,9 @@
 package api
 
 import (
+	"log/slog"
 	"tender/api/handler"
+	"tender/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +19,21 @@ import (
 // @in 							header
 // @name 						Authorization
 // @swagger:meta
-func Router(h *handler.Handler) *gin.Engine {
+func Router(service service.Service, logger *slog.Logger) *gin.Engine {
 	router := gin.Default()
+
+	h := handler.NewHandler(service, logger)
+
+	tender := router.Group("/tenders")
+	{
+		tender.POST("", h.CreateTender)
+		tender.GET("", h.GetAllTenders)
+		tender.PUT("/:id", h.UpdateTender)
+		tender.DELETE("/:id", h.DeleteTender)
+		tender.GET("/:id/bids", h.GetTenderBids)
+		tender.POST("/:id/bids", h.SubmitBit)
+		tender.POST("/:id/award/:bid_id", h.AwardTender)
+	}
 
 	return router
 }

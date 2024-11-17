@@ -109,11 +109,11 @@ func Test_GetTenderBids(t *testing.T) {
 	}
 }
 
-func Test_BidAwarded(t *testing.T) {
+func Test_SubmitBit(t *testing.T) {
 	db := ConnectDB(Logger)
 	c := NewClientRepo(db, Logger)
 
-	_, err := c.BidAwarded(&model.BidAwardedReq{
+	_, err := c.SubmitBit(&model.SubmitBitReq{
 		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
 		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
 		BidId:    "",
@@ -122,6 +122,21 @@ func Test_BidAwarded(t *testing.T) {
 
 	if err != nil {
 		Logger.Error(err.Error())
+		t.Fatal(err)
+	}
+}
+
+func Test_AwardTender(t *testing.T) {
+	db := ConnectDB(Logger)
+	c := NewClientRepo(db, Logger)
+
+	_, err := c.AwardTender(&model.AwardTenderReq{
+		ClientId: "7308f557-bca4-4bd3-8dc5-67e0c0de6955",
+		TenderId: "b572c2d2-265c-43af-9fa5-671dcfa5f6c9",
+		Bidid:    "",
+	})
+
+	if err != nil {
 		t.Fatal(err)
 	}
 }

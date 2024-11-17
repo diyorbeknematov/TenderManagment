@@ -46,6 +46,16 @@ func (S *Service) DeleteTender(req *model.DeleteTenderReq) (*model.DeleteTenderR
 }
 
 func (S *Service) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBidsResp, error) {
+	clientId, err := S.Storage.Client().GetUserByTebderId(req.TenderId)
+	if err != nil{
+		S.Log.Error(fmt.Sprintf("Bunday tender mavjud emas: %v", err))
+		return nil, err
+	}
+	if clientId != req.ClientId{
+		S.Log.Error(fmt.Sprintf("Clientning bunday tenderi mavjud emas: %v", err))
+		return nil, fmt.Errorf("clientning bunday tenderi mavjud emas: %v", err)
+	}
+
 	resp, err := S.Storage.Client().GetTenderBids(req)
 	if err != nil {
 		S.Log.Error(fmt.Sprintf("Tender bidlarini databazadan olib bo'lmadi: %v", err))
@@ -55,10 +65,30 @@ func (S *Service) GetTenderBids(req *model.GetTenderBidsReq) (*model.GetTenderBi
 	return resp, nil
 }
 
-func (S *Service) BidAwarded(req *model.BidAwardedReq) (*model.BidAwardedResp, error) {
-	resp, err := S.Storage.Client().BidAwarded(req)
+func (S *Service) SubmitBit(req *model.SubmitBitReq) (*model.SubmitBitResp, error) {
+	clientId, err := S.Storage.Client().GetUserByTebderId(req.TenderId)
+	if err != nil{
+		S.Log.Error(fmt.Sprintf("Bunday tender mavjud emas: %v", err))
+		return nil, err
+	}
+	if clientId != req.ClientId{
+		S.Log.Error(fmt.Sprintf("Clientning bunday tenderi mavjud emas: %v", err))
+		return nil, fmt.Errorf("clientning bunday tenderi mavjud emas: %v", err)
+	}
+
+	resp, err := S.Storage.Client().SubmitBit(req)
 	if err != nil {
 		S.Log.Error(fmt.Sprintf("Bidlarga status berib bo'lmadi: %v", err))
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (S *Service) AwardTender(req *model.AwardTenderReq)(*model.AwardTenderResp, error){
+	resp, err := S.Storage.Client().AwardTender(req)
+	if err != nil{
+		S.Log.Error(fmt.Sprintf("Tender yakunlanmadi: %v", err))
 		return nil, err
 	}
 
